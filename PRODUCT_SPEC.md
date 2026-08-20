@@ -1,0 +1,48 @@
+# TambaQu Product Specification — Phase 1
+
+## Product objective
+
+TambaQu helps vannamei shrimp farmers and pond operators move from reactive decisions toward earlier, data-supported risk mitigation. The core product sequence is: understand what is happening, judge whether it requires attention, understand why, then choose and record an appropriate field action.
+
+TambaQu is decision-support software. It does not diagnose disease, guarantee an event, or replace field verification and established operating procedures.
+
+## Personas
+
+### Farmer
+
+The farmer primarily uses a smartphone, often outdoors. The experience prioritizes current pond condition, clear risk language, an explanation of the contributing conditions, and a concise next action. Touch targets, text contrast, and sensor-number legibility take priority over information density.
+
+### Owner, pondivator, or field operator
+
+This user monitors several ponds from desktop, tablet, or laptop. The experience prioritizes which pond needs attention, the reason, action history, trends, alerts, and device health.
+
+## Primary use cases
+
+1. Enter a safe demo workspace without real credentials.
+2. Compare four ponds and identify the highest operational risk.
+3. Inspect current water-quality readings and device connectivity.
+4. Understand a transparent, synthetic risk explanation.
+5. Review recommended actions and existing action records.
+6. Review alerts, reporting structure, device status, and settings foundations.
+
+## MVP scope
+
+Phase 1 includes responsive routing, reusable visual primitives, mobile and desktop navigation, domain entities, mock repositories, deterministic 24-hour sensor histories, demo-session state, consistent units and WIB timestamps, starter pages, and architecture documentation.
+
+## Non-goals
+
+No real authentication, backend, cloud data, MQTT, weather API, WhatsApp integration, scientific/ML inference, notification engine, complex visualization, PWA installation, offline persistence, or background synchronization is implemented in this phase.
+
+## Terminology
+
+- **Pond**: a managed shrimp culture pond.
+- **Operational status**: active, maintenance, or inactive; independent of risk.
+- **Risk level**: safe (0–39), warning (40–69), or critical (70–100).
+- **PondBrain Insight**: an explainable decision-support summary. In the demo it uses deterministic synthetic logic.
+- **Alert**: a condition requiring awareness, acknowledgement, or resolution.
+- **Recommended action**: a proposed operational response that must be verified against field conditions and SOP.
+- **Action log**: a record of an action carried out by an operator.
+
+## Competition and demo context
+
+The application is a competition MVP that demonstrates product behavior and future technical fit. Every sensor reading, alert, risk score, device state, recommendation, and action record is synthetic. Copy in the interface explicitly marks the environment as a simulation so it cannot reasonably be mistaken for validated field data.
