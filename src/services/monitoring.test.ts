@@ -48,6 +48,8 @@ function pondItem(
       nitrite: 0.02,
     },
     history: [],
+    recommendations: [],
+    actions: [],
     device: {
       id: `device-${id}`,
       pondId: id,

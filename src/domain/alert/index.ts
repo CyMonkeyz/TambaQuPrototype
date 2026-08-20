@@ -13,4 +13,8 @@ export interface Alert {
   parameter: SensorParameter | "multiple";
   status: AlertStatus;
   riskAssessmentId: string;
+  acknowledgedAt?: string;
+  acknowledgedBy?: string;
+  resolvedAt?: string;
+  resolvedBy?: string;
 }

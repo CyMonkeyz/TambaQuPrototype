@@ -30,10 +30,14 @@ export interface RiskRepository {
 export interface AlertRepository {
   getByFarmId(farmId: string): Promise<Alert[]>;
   getByPondId(pondId: string): Promise<Alert[]>;
+  getById(id: string): Promise<Alert | null>;
+  acknowledge(id: string, userId: string, timestamp: string): Promise<Alert>;
+  resolve(id: string, userId: string, timestamp: string): Promise<Alert>;
 }
 
 export interface ActionRepository {
   getByFarmId(farmId: string): Promise<ActionLog[]>;
   getByPondId(pondId: string): Promise<ActionLog[]>;
+  getByRecommendationId(recommendationId: string): Promise<ActionLog | null>;
   add(action: ActionLog): Promise<ActionLog>;
 }

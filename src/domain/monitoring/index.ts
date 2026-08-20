@@ -1,6 +1,7 @@
 import type { Alert } from "../alert";
+import type { ActionLog } from "../action";
 import type { Pond } from "../pond";
-import type { RiskAssessment } from "../risk";
+import type { Recommendation, RiskAssessment } from "../risk";
 import type { SensorDevice, SensorParameter, SensorReading } from "../sensor";
 
 export type TrendDirection = "up" | "down" | "stable";
@@ -27,6 +28,8 @@ export interface PondMonitoringOverview {
   history: SensorReading[];
   risk: RiskAssessment;
   device: SensorDevice;
+  recommendations: Recommendation[];
+  actions: ActionLog[];
 }
 
 export interface FarmMonitoringData {

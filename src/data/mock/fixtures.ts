@@ -3,7 +3,6 @@ import type { Alert } from "../../domain/alert";
 import type { Farm } from "../../domain/farm";
 import type { Pond } from "../../domain/pond";
 import type {
-  Recommendation,
   RiskAssessment,
   RiskContributor,
   RiskLevel,
@@ -345,8 +344,22 @@ export const demoAlerts: Alert[] = [
     title: "Tingkat risiko meningkat",
     description: "DO menurun dan amonia meningkat pada data simulasi.",
     parameter: "multiple",
+    status: "new",
+    riskAssessmentId: "risk-pond-b",
+  },
+  {
+    id: "alert-b-ammonia",
+    pondId: "pond-b",
+    timestamp: "2026-08-20T13:58:00.000Z",
+    severity: "warning",
+    title: "Amonia menunjukkan tren meningkat",
+    description:
+      "Perubahan amonia perlu ditinjau bersama kondisi pakan dan parameter lain.",
+    parameter: "ammonia",
     status: "acknowledged",
     riskAssessmentId: "risk-pond-b",
+    acknowledgedAt: "2026-08-20T14:02:00.000Z",
+    acknowledgedBy: demoUser.id,
   },
   {
     id: "alert-d-device",
@@ -358,36 +371,36 @@ export const demoAlerts: Alert[] = [
     parameter: "multiple",
     status: "resolved",
     riskAssessmentId: "risk-pond-d",
+    resolvedAt: "2026-08-20T12:30:00.000Z",
+    resolvedBy: demoUser.id,
   },
-];
-
-export const demoRecommendations: Recommendation[] = [
   {
-    id: "rec-c-aeration",
+    id: "alert-a-ph-history",
+    pondId: "pond-a",
+    timestamp: "2026-08-19T10:18:00.000Z",
+    severity: "warning",
+    title: "Perubahan pH telah ditinjau",
+    description:
+      "Perubahan sesaat pada data demo telah diverifikasi melalui monitoring lanjutan.",
+    parameter: "ph",
+    status: "resolved",
+    riskAssessmentId: "risk-pond-a",
+    resolvedAt: "2026-08-19T10:42:00.000Z",
+    resolvedBy: demoUser.id,
+  },
+  {
+    id: "alert-c-nitrite-history",
+    pondId: "pond-c",
+    timestamp: "2026-08-19T08:20:00.000Z",
+    severity: "critical",
+    title: "Peningkatan nitrit telah ditindaklanjuti",
+    description:
+      "Pemeriksaan lapangan terkait nitrit telah dicatat pada skenario sebelumnya.",
+    parameter: "nitrite",
+    status: "resolved",
     riskAssessmentId: "risk-pond-c",
-    priority: "urgent",
-    title: "Periksa dan tingkatkan aerasi",
-    description:
-      "Verifikasi aerator aktif dan lakukan pengecekan DO manual sebelum tindakan lanjutan.",
-    targetCompletionMinutes: 15,
-  },
-  {
-    id: "rec-c-water",
-    riskAssessmentId: "risk-pond-c",
-    priority: "high",
-    title: "Periksa sumber peningkatan amonia",
-    description:
-      "Tinjau sisa pakan dan kondisi dasar kolam berdasarkan SOP lapangan.",
-    targetCompletionMinutes: 45,
-  },
-  {
-    id: "rec-b-monitor",
-    riskAssessmentId: "risk-pond-b",
-    priority: "medium",
-    title: "Pantau DO lebih sering",
-    description:
-      "Lakukan verifikasi lapangan dan pantau perubahan dalam 30 menit.",
-    targetCompletionMinutes: 30,
+    resolvedAt: "2026-08-19T09:05:00.000Z",
+    resolvedBy: demoUser.id,
   },
 ];
 
@@ -396,9 +409,30 @@ export const demoActions: ActionLog[] = [
     id: "action-b-1",
     pondId: "pond-b",
     recommendationId: "rec-b-monitor",
+    actionTitle: "Periksa kembali parameter dalam 1 jam",
     performedBy: demoUser.id,
     performedAt: "2026-08-20T14:31:00.000Z",
     notes: "Aerator tambahan dinyalakan dan pemeriksaan manual dijadwalkan.",
+    syncStatus: "synced",
+  },
+  {
+    id: "action-b-history",
+    pondId: "pond-b",
+    recommendationId: "rec-b-history-check",
+    actionTitle: "Pengecekan kondisi kolam",
+    performedBy: demoUser.id,
+    performedAt: "2026-08-20T13:10:00.000Z",
+    notes: "Kondisi permukaan air dan aktivitas udang diperiksa.",
+    syncStatus: "synced",
+  },
+  {
+    id: "action-a-routine",
+    pondId: "pond-a",
+    recommendationId: "rec-a-routine-history",
+    actionTitle: "Monitoring rutin parameter air",
+    performedBy: demoUser.id,
+    performedAt: "2026-08-19T11:32:00.000Z",
+    notes: "Tidak ditemukan perubahan operasional yang perlu ditindaklanjuti.",
     syncStatus: "synced",
   },
 ];

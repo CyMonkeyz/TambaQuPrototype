@@ -4,6 +4,13 @@ export type RiskLevel = "safe" | "warning" | "critical";
 export type RiskDirection = "up" | "down" | "stable";
 export type RecommendationPriority = "low" | "medium" | "high" | "urgent";
 
+export type RecommendationStatus = "pending" | "completed";
+
+export interface RiskTrendPoint {
+  timestamp: string;
+  score: number;
+}
+
 export interface RiskContributor {
   parameter: SensorParameter | "weatherContext";
   contribution: number;

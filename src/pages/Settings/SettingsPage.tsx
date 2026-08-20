@@ -1,7 +1,12 @@
 import { BellRing, Database, UserRound } from "lucide-react";
+import { useState } from "react";
 import { PageHeader } from "../../components/common/PageHeader";
 import { Card } from "../../components/ui/Card";
 import { StatusBadge } from "../../components/ui/StatusBadge";
+import { Button } from "../../components/ui/Button";
+import { Dialog } from "../../components/ui/Overlay";
+import { toast } from "../../components/ui/toast-api";
+import { resetDemoData } from "../../data/repositories";
 import { useAppStore } from "../../store/app-store";
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
@@ -9,6 +14,7 @@ export function SettingsPage() {
   useDocumentTitle("Pengaturan");
   const user = useAppStore((state) => state.activeUser);
   const farm = useAppStore((state) => state.activeFarm);
+  const [resetOpen, setResetOpen] = useState(false);
   const sections = [
     {
       icon: UserRound,
@@ -53,6 +59,20 @@ export function SettingsPage() {
               </div>
             </Card>
           ))}
+          <Card className="p-5 shadow-none">
+            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+              <div>
+                <h2 className="font-semibold">Reset Data Demo</h2>
+                <p className="mt-1 text-sm leading-6 text-foreground-muted">
+                  Kembalikan status alert, rekomendasi, dan riwayat tindakan ke
+                  kondisi awal presentasi.
+                </p>
+              </div>
+              <Button variant="secondary" onClick={() => setResetOpen(true)}>
+                Reset Data Demo
+              </Button>
+            </div>
+          </Card>
         </div>
         <Card className="h-fit p-5 shadow-none">
           <p className="text-sm font-semibold text-primary">Tambak aktif</p>
@@ -70,6 +90,28 @@ export function SettingsPage() {
           </p>
         </Card>
       </div>
+      <Dialog
+        open={resetOpen}
+        onOpenChange={setResetOpen}
+        title="Reset Data Demo?"
+        description="Tindakan yang Anda catat selama latihan dan perubahan status peringatan akan dikembalikan ke fixture awal."
+      >
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <Button variant="secondary" onClick={() => setResetOpen(false)}>
+            Batal
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              resetDemoData();
+              setResetOpen(false);
+              toast.success("Data demo berhasil direset.");
+            }}
+          >
+            Ya, Reset Data Demo
+          </Button>
+        </div>
+      </Dialog>
     </>
   );
 }

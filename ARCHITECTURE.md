@@ -1,4 +1,4 @@
-# TambaQu Architecture — Phases 1–2
+# TambaQu Architecture — Phases 1–3
 
 ## Stack
 
@@ -57,9 +57,33 @@ Add implementations such as `ApiPondRepository` and construct the repository con
 
 `WaterQualityChart` receives repository-provided history and controlled parameter/range state. It shows one parameter at a time so different units and scales are never conflated. Pages lazy-load the Recharts component, and every chart includes a textual latest-value/trend summary for accessibility. Sensor cards control the chart through ordinary React state; no event bus or duplicated telemetry store is introduced.
 
+## Phase 3 decision-support services
+
+`services/risk/riskEngine.ts` maps scores to levels, sorts contributors, derives deterministic history from the same sensor readings, and calculates data confidence from completeness, device freshness, and contributor coverage. The demo calibration preserves the settled A/B/C/D scenarios without pond-specific branching in UI code.
+
+`services/recommendation/recommendationEngine.ts` generates ordered recommendations from risk level and contributors. `services/action/actionService.ts` prevents duplicate completion and creates immutable `ActionLog` records. Alert transitions live in `services/alert/alertService.ts`; reusable selectors own filtering, pending counts, completion state, and top-contributor lookup.
+
+## Action and alert lifecycle
+
+```text
+RiskAssessment -> Recommendation -> confirmation -> ActionLog
+Alert(new) -> acknowledged -> follow-up recorded
+```
+
+The mock repositories own mutable demo state and persist only alerts and actions to versioned `localStorage`. This is demo persistence, not an offline queue. A confirmed reset restores deterministic fixtures. Zustand remains limited to session and selection preferences.
+
+## Future ML replacement
+
+```text
+Current: Sensor Data -> Deterministic Risk Engine -> RiskAssessment
+Future:  Sensor Data -> Backend Feature Pipeline -> Validated ML Model -> Risk API -> RiskAssessment
+```
+
+The frontend consumes the same explainable `RiskAssessment` contract in both cases. A future model must still provide score, level, contributors, and summary; replacing the engine must not turn the UI into a black box.
+
 ## Future PWA and offline architecture
 
-The planned offline path is a service worker for application-shell assets, IndexedDB for explicitly cacheable repository responses, and an action command queue with idempotency keys. Pending commands map naturally to `ActionLog.syncStatus`. A synchronization coordinator can replay commands when connectivity returns and repositories can expose cache metadata. None of this is active in Phase 1, avoiding premature cache and conflict semantics.
+The planned offline path is a service worker for application-shell assets, IndexedDB for explicitly cacheable repository responses, and an action command queue with idempotency keys. Pending commands map naturally to `ActionLog.syncStatus`. A synchronization coordinator can replay commands when connectivity returns and repositories can expose cache metadata. None of this is active through Phase 3, avoiding premature cache and conflict semantics.
 
 ## Why these choices
 

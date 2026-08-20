@@ -1,4 +1,4 @@
-# TambaQu Product Specification — Phases 1–2
+# TambaQu Product Specification — Phases 1–3
 
 ## Product objective
 
@@ -31,9 +31,28 @@ Phase 1 includes responsive routing, reusable visual primitives, mobile and desk
 
 Phase 2 adds the mature monitoring command center: farm overview, selected-pond monitoring, current sensor state, deterministic 6-hour/24-hour/7-day trends, pond prioritization, searchable/filterable multi-pond comparison, detailed pond monitoring, freshness, and device/data-health states.
 
+Phase 3 adds the decision-support loop: explainable PondBrain risk analysis, deterministic recommendations, action confirmation and audit history, a complete alert-review lifecycle, and shared demo-state persistence. Monitoring, risk assessment, alert, recommendation, and farmer action remain distinct domain concepts.
+
+## PondBrain user journey
+
+1. Select a pond or preserve the context from Dashboard, Alert Detail, or Pond Detail.
+2. Read the current score and explicit Aman/Waspada/Kritis label.
+3. Understand what changed through the trend, contributors, and textual insight.
+4. Review recommended actions ordered by operational priority.
+5. Confirm a completed field action and optionally add notes.
+6. Verify who did what and when in the action timeline while monitoring continues.
+
+## Alert and action feedback loop
+
+An alert is reviewed separately from its risk assessment. Acknowledgement records that an operator has seen the event. A completed recommendation creates an `ActionLog`; when a related action exists, an acknowledged alert may be marked **Tindak Lanjut Tercatat**. This label does not claim that pond conditions have recovered.
+
+## Future product metrics
+
+The analytics contract is intentionally provider-free. Future measurement can include alert response time, recommendation adoption rate, action completion rate, PondBrain engagement, and time-to-action without coupling UI components to an external analytics SDK.
+
 ## Non-goals
 
-No real authentication, backend, cloud data, MQTT, weather API, WhatsApp integration, scientific/ML inference, notification engine, complex visualization, PWA installation, offline persistence, or background synchronization is implemented in this phase.
+No realtime simulator, expanded report generation, advanced device management, real authentication, backend, MQTT, WhatsApp integration, scientific/ML inference, notification server, PWA installation, offline persistence, or background synchronization is implemented in this phase.
 
 ## Terminology
 

@@ -30,8 +30,12 @@ import {
   getDataFreshness,
   getFarmRiskSummary,
 } from "../../services/monitoring";
+import {
+  getPendingRecommendations,
+  getTopRiskContributor,
+} from "../../services/selectors";
 import { useAppStore } from "../../store/app-store";
-import { formatWibTime } from "../../utils/formatters";
+import { formatWibTime, getSensorMeta } from "../../utils/formatters";
 import { DEFAULT_DEMO_POND_ID } from "../../constants/demo";
 
 const WaterQualityChart = lazy(
@@ -82,6 +86,17 @@ export function DashboardPage() {
   const activeAlerts = data.alerts
     .filter((alert) => alert.status !== "resolved")
     .slice(0, 3);
+  const pendingRecommendations = getPendingRecommendations(
+    selected.recommendations,
+    selected.actions,
+  );
+  const topContributor = getTopRiskContributor(selected.risk.contributors);
+  const topContributorLabel =
+    topContributor?.parameter === "weatherContext"
+      ? "Konteks Lingkungan"
+      : topContributor
+        ? getSensorMeta(topContributor.parameter).label
+        : "Belum tersedia";
   const chooseParameter = (nextParameter: SensorParameter) => {
     setParameter(nextParameter);
     const reducedMotion = window.matchMedia(
@@ -192,10 +207,20 @@ export function DashboardPage() {
               compact
               title="PondBrain Insight"
             />
-            <p className="mt-4 text-sm leading-6 text-foreground-muted">
-              Terjadi kombinasi perubahan parameter yang perlu dilihat bersama,
-              bukan sebagai diagnosis tunggal.
-            </p>
+            <dl className="mt-4 grid grid-cols-2 gap-3">
+              <div className="rounded-xl bg-surface-muted p-3">
+                <dt className="text-xs text-foreground-muted">Faktor utama</dt>
+                <dd className="mt-1 text-sm font-semibold">
+                  {topContributorLabel} · {topContributor?.contribution ?? 0}%
+                </dd>
+              </div>
+              <div className="rounded-xl bg-surface-muted p-3">
+                <dt className="text-xs text-foreground-muted">Tindakan</dt>
+                <dd className="mt-1 text-sm font-semibold">
+                  {pendingRecommendations.length} direkomendasikan
+                </dd>
+              </div>
+            </dl>
             <Link
               className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary"
               to={`/app/pondbrain?pond=${selected.pond.id}`}

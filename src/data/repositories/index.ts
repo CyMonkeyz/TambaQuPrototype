@@ -5,6 +5,7 @@ import {
   MockPondRepository,
   MockRiskRepository,
   MockSensorRepository,
+  resetMockDemoState,
 } from "./mock";
 
 export const repositories = {
@@ -15,6 +16,8 @@ export const repositories = {
   alert: new MockAlertRepository(),
   action: new MockActionRepository(),
 };
+
+export const resetDemoData = resetMockDemoState;
 
 export type {
   ActionRepository,

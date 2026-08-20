@@ -28,11 +28,7 @@ export function Sidebar() {
         <AppLogo compact={collapsed} />
         {!collapsed && (
           <Tooltip label="Ciutkan sidebar">
-            <IconButton
-              label="Ciutkan sidebar"
-              className="size-9"
-              onClick={toggleSidebar}
-            >
+            <IconButton label="Ciutkan sidebar" onClick={toggleSidebar}>
               <ChevronsLeft size={18} />
             </IconButton>
           </Tooltip>
@@ -42,7 +38,7 @@ export function Sidebar() {
         <Tooltip label="Perluas sidebar">
           <IconButton
             label="Perluas sidebar"
-            className="mx-auto mt-3 size-9"
+            className="mx-auto mt-3"
             onClick={toggleSidebar}
           >
             <ChevronsRight size={18} />

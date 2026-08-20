@@ -9,16 +9,17 @@ import { useRepositoryData } from "./useRepositoryData";
 async function loadPondOverview(
   pondId: string,
 ): Promise<PondMonitoringOverview | null> {
-  const [pond, reading, history, risk, device] = await Promise.all([
+  const [pond, reading, history, risk, device, actions] = await Promise.all([
     repositories.pond.getById(pondId),
     repositories.sensor.getCurrentReading(pondId),
     repositories.sensor.getHistory(pondId, 168),
     repositories.risk.getCurrentByPondId(pondId),
     repositories.sensor.getDeviceByPondId(pondId),
+    repositories.action.getByPondId(pondId),
   ]);
-  return pond && reading && risk && device
-    ? { pond, reading, history, risk, device }
-    : null;
+  if (!pond || !reading || !risk || !device) return null;
+  const recommendations = await repositories.risk.getRecommendations(risk.id);
+  return { pond, reading, history, risk, device, recommendations, actions };
 }
 
 async function loadFarmMonitoring(farmId: string): Promise<FarmMonitoringData> {

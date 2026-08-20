@@ -31,8 +31,12 @@ import {
   calculateTrend,
   getDataFreshness,
 } from "../../services/monitoring";
+import {
+  getPendingRecommendations,
+  getTopRiskContributor,
+} from "../../services/selectors";
 import { useAppStore } from "../../store/app-store";
-import { formatWibTime } from "../../utils/formatters";
+import { formatWibTime, getSensorMeta } from "../../utils/formatters";
 
 const WaterQualityChart = lazy(
   () => import("../../components/domain/WaterQualityChart"),
@@ -41,6 +45,7 @@ const WaterQualityChart = lazy(
 export function PondDetailPage() {
   const { pondId = "" } = useParams();
   const farm = useAppStore((state) => state.activeFarm);
+  const user = useAppStore((state) => state.activeUser);
   const { data, isLoading, error, retry } = usePondMonitoring(pondId);
   const [parameter, setParameter] =
     useState<SensorParameter>("dissolvedOxygen");
@@ -63,6 +68,20 @@ export function PondDetailPage() {
     data.reading.timestamp,
   );
   const scoreChange = calculateRiskScoreChange(data);
+  const pendingRecommendations = getPendingRecommendations(
+    data.recommendations,
+    data.actions,
+  );
+  const latestAction = [...data.actions].sort(
+    (a, b) => Date.parse(b.performedAt) - Date.parse(a.performedAt),
+  )[0];
+  const topContributor = getTopRiskContributor(data.risk.contributors);
+  const topContributorLabel =
+    topContributor?.parameter === "weatherContext"
+      ? "Konteks Lingkungan"
+      : topContributor
+        ? getSensorMeta(topContributor.parameter).label
+        : "Belum tersedia";
   const chooseParameter = (nextParameter: SensorParameter) => {
     setParameter(nextParameter);
     const reducedMotion = window.matchMedia(
@@ -123,7 +142,7 @@ export function PondDetailPage() {
           <RiskSummary
             risk={data.risk}
             scoreChange={scoreChange}
-            title="Disease Risk Score"
+            title="Risk Score"
           />
         </Card>
         <Card className="p-5 sm:p-6">
@@ -186,9 +205,25 @@ export function PondDetailPage() {
                       ? "Waspada"
                       : "Aman"}
                 </p>
-                <p className="mt-2 text-sm leading-6 text-foreground-muted">
-                  {data.risk.summary}
-                </p>
+                <dl className="mt-3 grid grid-cols-2 gap-3">
+                  <div className="rounded-xl bg-surface-muted p-3">
+                    <dt className="text-xs text-foreground-muted">
+                      Faktor utama
+                    </dt>
+                    <dd className="mt-1 text-sm font-semibold">
+                      {topContributorLabel} ·{" "}
+                      {topContributor?.contribution ?? 0}%
+                    </dd>
+                  </div>
+                  <div className="rounded-xl bg-surface-muted p-3">
+                    <dt className="text-xs text-foreground-muted">
+                      Tindakan tertunda
+                    </dt>
+                    <dd className="mt-1 text-sm font-semibold">
+                      {pendingRecommendations.length}
+                    </dd>
+                  </div>
+                </dl>
                 <Link
                   className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary"
                   to={`/app/pondbrain?pond=${data.pond.id}`}
@@ -214,6 +249,24 @@ export function PondDetailPage() {
           title="Aktivitas Terbaru"
           description="Preview peringatan terkait kolam ini."
         />
+        {latestAction && (
+          <div className="mb-4 rounded-xl bg-[var(--risk-safe-bg)] p-4">
+            <p className="text-xs font-semibold uppercase tracking-[.1em] text-risk-safe">
+              Tindakan terakhir tercatat
+            </p>
+            <p className="mt-2 text-sm font-semibold">
+              {latestAction.actionTitle}
+            </p>
+            <p className="mt-1 text-xs text-foreground-muted">
+              {formatWibTime(latestAction.performedAt)} · {user?.name}
+            </p>
+            {latestAction.notes && (
+              <p className="mt-2 text-sm leading-6 text-foreground-muted">
+                {latestAction.notes}
+              </p>
+            )}
+          </div>
+        )}
         {data.alerts.length ? (
           <div className="grid gap-3 sm:grid-cols-2">
             {data.alerts.slice(0, 3).map((alert) => (
