@@ -1,4 +1,4 @@
-# TambaQu Product Specification — Phase 1
+# TambaQu Product Specification — Phases 1–2
 
 ## Product objective
 
@@ -28,6 +28,8 @@ This user monitors several ponds from desktop, tablet, or laptop. The experience
 ## MVP scope
 
 Phase 1 includes responsive routing, reusable visual primitives, mobile and desktop navigation, domain entities, mock repositories, deterministic 24-hour sensor histories, demo-session state, consistent units and WIB timestamps, starter pages, and architecture documentation.
+
+Phase 2 adds the mature monitoring command center: farm overview, selected-pond monitoring, current sensor state, deterministic 6-hour/24-hour/7-day trends, pond prioritization, searchable/filterable multi-pond comparison, detailed pond monitoring, freshness, and device/data-health states.
 
 ## Non-goals
 

@@ -1,5 +1,5 @@
-import { demoFarm, demoUser } from '../data/mock/fixtures'
+import { demoFarm, demoUser } from "../data/mock/fixtures";
 
 export function getDemoSession() {
-  return { user: demoUser, farm: demoFarm }
+  return { user: demoUser, farm: demoFarm };
 }

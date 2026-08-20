@@ -1,28 +1,254 @@
-import { ArrowLeft, Clock3, Droplets, Gauge, Thermometer, Waves } from 'lucide-react'
-import { Link, useParams } from 'react-router-dom'
-import { SectionHeader } from '../../components/common/SectionHeader'
-import { DeviceStatus } from '../../components/domain/DeviceStatus'
-import { RiskSummary } from '../../components/domain/RiskSummary'
-import { SensorMetric } from '../../components/domain/SensorMetric'
-import { Card } from '../../components/ui/Card'
-import { EmptyState, ErrorState, LoadingSkeleton } from '../../components/ui/Feedback'
-import { StatusBadge } from '../../components/ui/StatusBadge'
-import { repositories } from '../../data/repositories'
-import { useRepositoryData } from '../../hooks/useRepositoryData'
-import { formatDate, formatUpdatedAt } from '../../utils/formatters'
+import {
+  ArrowLeft,
+  ArrowRight,
+  Bell,
+  BrainCircuit,
+  MapPin,
+} from "lucide-react";
+import { lazy, Suspense, useRef, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { SectionHeader } from "../../components/common/SectionHeader";
+import { DeviceStatus } from "../../components/domain/DeviceStatus";
+import { FreshnessIndicator } from "../../components/domain/FreshnessIndicator";
+import { MonitoringSummary } from "../../components/domain/MonitoringSummary";
+import { RiskSummary } from "../../components/domain/RiskSummary";
+import { SensorMetricCard } from "../../components/domain/SensorMetricCard";
+import { Card } from "../../components/ui/Card";
+import {
+  EmptyState,
+  ErrorState,
+  LoadingSkeleton,
+} from "../../components/ui/Feedback";
+import { RiskBadge } from "../../components/ui/RiskBadge";
+import { StatusBadge } from "../../components/ui/StatusBadge";
+import type { MonitoringRange } from "../../domain/monitoring";
+import { SENSOR_PARAMETERS } from "../../domain/monitoring";
+import type { SensorParameter } from "../../domain/sensor";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
+import { usePondMonitoring } from "../../hooks/useMonitoring";
+import {
+  calculateRiskScoreChange,
+  calculateTrend,
+  getDataFreshness,
+} from "../../services/monitoring";
+import { useAppStore } from "../../store/app-store";
+import { formatWibTime } from "../../utils/formatters";
 
-async function loadPondDetail(pondId: string) {
-  const [pond, reading, risk, device, alerts, actions] = await Promise.all([repositories.pond.getById(pondId), repositories.sensor.getCurrentReading(pondId), repositories.risk.getCurrentByPondId(pondId), repositories.sensor.getDeviceByPondId(pondId), repositories.alert.getByPondId(pondId), repositories.action.getByPondId(pondId)])
-  const recommendations = risk ? await repositories.risk.getRecommendations(risk.id) : []
-  return { pond, reading, risk, device, alerts, actions, recommendations }
-}
+const WaterQualityChart = lazy(
+  () => import("../../components/domain/WaterQualityChart"),
+);
 
 export function PondDetailPage() {
-  const { pondId = '' } = useParams()
-  const { data, isLoading, error } = useRepositoryData(() => loadPondDetail(pondId), pondId)
-  if (isLoading) return <LoadingSkeleton rows={4}/>
-  if (error) return <ErrorState/>
-  if (!data?.pond || !data.reading || !data.risk || !data.device) return <EmptyState title="Kolam tidak ditemukan" description="Periksa kembali tautan atau pilih kolam dari halaman Ponds."/>
-  const { pond, reading, risk, device, recommendations, actions } = data
-  return <><Link to="/app/ponds" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-foreground-muted hover:text-primary"><ArrowLeft size={17}/>Kembali ke Ponds</Link><header className="mt-3 flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><div className="flex flex-wrap items-center gap-2"><h1 className="text-2xl font-semibold tracking-[-.035em] sm:text-3xl">{pond.name}</h1><StatusBadge status={pond.status}/></div><p className="mt-2 text-sm text-foreground-muted">{pond.code} · {pond.areaM2.toLocaleString('id-ID')} m² · DOC {pond.cultureDay} · Tebar {formatDate(pond.stockingDate)}</p></div><p className="text-xs text-foreground-muted">{formatUpdatedAt(reading.timestamp)}</p></header><div className="mt-8 grid gap-4 lg:grid-cols-[1.15fr_.85fr]"><Card className="p-5 sm:p-6"><SectionHeader eyebrow="Kualitas air" title="Pembacaan terbaru"/><div className="grid grid-cols-2 gap-3 sm:grid-cols-3"><SensorMetric parameter="dissolvedOxygen" value={reading.dissolvedOxygen} icon={Droplets}/><SensorMetric parameter="ph" value={reading.ph} icon={Gauge}/><SensorMetric parameter="temperature" value={reading.temperature} icon={Thermometer}/><SensorMetric parameter="salinity" value={reading.salinity} icon={Waves}/><SensorMetric parameter="ammonia" value={reading.ammonia}/><SensorMetric parameter="nitrite" value={reading.nitrite}/></div></Card><Card className="p-5 sm:p-6"><RiskSummary risk={risk}/></Card></div><div className="mt-4 grid gap-4 lg:grid-cols-2"><Card className="p-5 sm:p-6"><SectionHeader eyebrow="Recommended action" title="Tindakan berikutnya" description="Verifikasi kondisi lapangan sebelum bertindak."/>{recommendations.length ? <div className="space-y-3">{recommendations.map((item) => <div key={item.id} className="rounded-xl border border-border p-4"><div className="flex items-start justify-between gap-3"><p className="font-semibold">{item.title}</p><span className="inline-flex items-center gap-1 whitespace-nowrap text-xs text-foreground-muted"><Clock3 size={14}/>{item.targetCompletionMinutes} menit</span></div><p className="mt-2 text-sm leading-6 text-foreground-muted">{item.description}</p></div>)}</div> : <EmptyState title="Tidak ada tindakan prioritas" description="Lanjutkan pemantauan rutin sesuai SOP tambak."/>}</Card><Card className="p-5 sm:p-6"><SectionHeader eyebrow="Perangkat" title="Status sensor"/><DeviceStatus device={device}/><div className="mt-6 border-t border-border pt-5"><p className="text-sm font-semibold">Riwayat tindakan</p>{actions.length ? actions.map((action) => <p key={action.id} className="mt-3 rounded-xl bg-surface-muted p-3 text-sm leading-6 text-foreground-muted">{action.notes}</p>) : <p className="mt-3 text-sm text-foreground-muted">Belum ada tindakan yang tercatat untuk kolam ini.</p>}</div></Card></div></>
+  const { pondId = "" } = useParams();
+  const farm = useAppStore((state) => state.activeFarm);
+  const { data, isLoading, error, retry } = usePondMonitoring(pondId);
+  const [parameter, setParameter] =
+    useState<SensorParameter>("dissolvedOxygen");
+  const [range, setRange] = useState<MonitoringRange>("24h");
+  const chartRef = useRef<HTMLDivElement>(null);
+  useDocumentTitle(data?.pond.name ?? "Detail Kolam");
+
+  if (isLoading) return <LoadingSkeleton rows={5} />;
+  if (error) return <ErrorState onRetry={retry} />;
+  if (!data)
+    return (
+      <EmptyState
+        title="Kolam tidak ditemukan"
+        description="Periksa kembali tautan atau pilih kolam dari halaman Kondisi Kolam."
+      />
+    );
+
+  const freshness = getDataFreshness(
+    data.device.lastSyncAt,
+    data.reading.timestamp,
+  );
+  const scoreChange = calculateRiskScoreChange(data);
+  const chooseParameter = (nextParameter: SensorParameter) => {
+    setParameter(nextParameter);
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    chartRef.current?.scrollIntoView({
+      behavior: reducedMotion ? "auto" : "smooth",
+      block: "center",
+    });
+  };
+
+  return (
+    <div className="space-y-5">
+      <nav aria-label="Breadcrumb">
+        <Link
+          to="/app/ponds"
+          className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-foreground-muted hover:text-primary"
+        >
+          <ArrowLeft size={17} />
+          Kondisi Kolam{" "}
+          <span className="hidden sm:inline">/ {data.pond.name}</span>
+        </Link>
+      </nav>
+      <Card className="p-5 sm:p-6">
+        <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-start">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-2xl font-semibold tracking-[-.035em] sm:text-3xl">
+                {data.pond.name}
+              </h1>
+              <RiskBadge level={data.risk.level} />
+              <StatusBadge status={data.device.connectionStatus} />
+            </div>
+            <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm text-foreground-muted">
+              <span>{farm?.name}</span>
+              <span className="inline-flex items-center gap-1">
+                <MapPin size={14} />
+                {farm?.location}
+              </span>
+            </p>
+            <p className="mt-4 text-sm text-foreground-muted">
+              Hari ke-
+              <strong className="text-foreground">
+                {data.pond.cultureDay}
+              </strong>{" "}
+              ·{" "}
+              <strong className="text-foreground">
+                {data.pond.areaM2.toLocaleString("id-ID")} m²
+              </strong>{" "}
+              · {data.pond.code}
+            </p>
+          </div>
+          <FreshnessIndicator {...freshness} />
+        </div>
+      </Card>
+      <div className="grid gap-4 lg:grid-cols-[.72fr_1.28fr]">
+        <Card className="p-5 sm:p-6">
+          <RiskSummary
+            risk={data.risk}
+            scoreChange={scoreChange}
+            title="Disease Risk Score"
+          />
+        </Card>
+        <Card className="p-5 sm:p-6">
+          <SectionHeader
+            eyebrow="Kondisi air saat ini"
+            title="Pembacaan Sensor"
+            description={`Diperbarui ${formatWibTime(data.reading.timestamp)}`}
+          />
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {SENSOR_PARAMETERS.map((item) => (
+              <SensorMetricCard
+                key={item}
+                parameter={item}
+                value={data.reading[item]}
+                trend={calculateTrend(
+                  data.history.map((reading) => reading[item]),
+                  6,
+                )}
+                selected={parameter === item}
+                onSelect={() => chooseParameter(item)}
+              />
+            ))}
+          </div>
+          <p className="mt-3 text-xs text-foreground-muted">
+            Status berdasarkan konfigurasi demo TambaQu. Klik kartu untuk
+            mengubah grafik.
+          </p>
+        </Card>
+      </div>
+      <Card className="p-5 sm:p-6">
+        <div ref={chartRef}>
+          <Suspense fallback={<LoadingSkeleton rows={2} />}>
+            <WaterQualityChart
+              history={data.history}
+              parameter={parameter}
+              range={range}
+              onParameterChange={setParameter}
+              onRangeChange={setRange}
+            />
+          </Suspense>
+        </div>
+      </Card>
+      <div className="grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
+        <Card className="p-5 sm:p-6">
+          <MonitoringSummary item={data} />
+          <div className="mt-5 border-t border-border pt-5">
+            <div className="flex items-start gap-3">
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#dff3f0] text-primary">
+                <BrainCircuit size={20} />
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-primary">
+                  PondBrain Insight
+                </p>
+                <p className="mt-1 font-semibold">
+                  Risk {data.risk.score} ·{" "}
+                  {data.risk.level === "critical"
+                    ? "Kritis"
+                    : data.risk.level === "warning"
+                      ? "Waspada"
+                      : "Aman"}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-foreground-muted">
+                  {data.risk.summary}
+                </p>
+                <Link
+                  className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-primary"
+                  to={`/app/pondbrain?pond=${data.pond.id}`}
+                >
+                  Lihat Analisis <ArrowRight size={16} />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </Card>
+        <Card className="p-5 sm:p-6">
+          <SectionHeader eyebrow="Device health" title="Perangkat Sensor" />
+          <DeviceStatus
+            device={data.device}
+            referenceTimestamp={data.reading.timestamp}
+            detailed
+          />
+        </Card>
+      </div>
+      <Card className="p-5 sm:p-6">
+        <SectionHeader
+          eyebrow="Situational awareness"
+          title="Aktivitas Terbaru"
+          description="Preview peringatan terkait kolam ini."
+        />
+        {data.alerts.length ? (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {data.alerts.slice(0, 3).map((alert) => (
+              <div
+                key={alert.id}
+                className="flex gap-3 rounded-xl bg-surface-muted p-4"
+              >
+                <Bell
+                  className={
+                    alert.severity === "critical"
+                      ? "mt-0.5 shrink-0 text-risk-critical"
+                      : "mt-0.5 shrink-0 text-risk-warning"
+                  }
+                  size={17}
+                />
+                <div>
+                  <p className="text-sm font-semibold">{alert.title}</p>
+                  <p className="mt-1 text-xs text-foreground-muted">
+                    {formatWibTime(alert.timestamp)} ·{" "}
+                    {alert.status === "new"
+                      ? "Baru"
+                      : alert.status === "acknowledged"
+                        ? "Diketahui"
+                        : "Selesai"}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-foreground-muted">
+            Belum ada aktivitas peringatan untuk kolam ini.
+          </p>
+        )}
+      </Card>
+    </div>
+  );
 }

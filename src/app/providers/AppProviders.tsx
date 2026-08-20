@@ -1,6 +1,11 @@
-import type { ReactNode } from 'react'
-import { ToastProvider } from '../../components/ui/Toast'
+import type { ReactNode } from "react";
+import { ToastProvider } from "../../components/ui/Toast";
 
 export function AppProviders({ children }: { children: ReactNode }) {
-  return <>{children}<ToastProvider/></>
+  return (
+    <>
+      {children}
+      <ToastProvider />
+    </>
+  );
 }

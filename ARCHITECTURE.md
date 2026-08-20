@@ -1,4 +1,4 @@
-# TambaQu Architecture — Phase 1
+# TambaQu Architecture — Phases 1–2
 
 ## Stack
 
@@ -11,6 +11,7 @@
 - Radix Dialog and Tooltip primitives for keyboard/focus behavior.
 - Sonner for a lightweight toast surface.
 - OpenAI Sites Vite metadata with a minimal Cloudflare-compatible static asset worker for deployment only.
+- Recharts, loaded as a separate route chunk, for focused single-parameter water-quality history.
 
 ## Folder architecture
 
@@ -41,6 +42,20 @@ Zustand contains the active user, active farm, selected pond, demo-mode flag, an
 ## Future API integration
 
 Add implementations such as `ApiPondRepository` and construct the repository container through environment-aware dependency injection. Keep response mapping at the data boundary so UI/domain contracts remain stable. Authentication tokens should be handled by a dedicated API/session service, not embedded in page components or Zustand domain records.
+
+## Phase 2 monitoring hooks
+
+`useFarmMonitoring` and `usePondMonitoring` compose existing repository contracts into UI-ready monitoring records. Pages still do not import fixtures, and domain data is not copied into Zustand. `useRepositoryData` provides loading, error, and retry behavior while retaining an API-compatible asynchronous boundary.
+
+`useDocumentTitle` keeps route titles contextual without introducing an SEO framework.
+
+## Derived monitoring logic
+
+`src/services/monitoring.ts` owns deterministic calculations used across screens: farm risk counts, highest-priority pond, risk sorting, trend percentage/direction, parameter-aware sentiment, demo sensor state, data freshness, monitoring summaries, and risk-score change. Focused Vitest coverage protects edge cases such as missing readings and zero baselines.
+
+## Chart architecture
+
+`WaterQualityChart` receives repository-provided history and controlled parameter/range state. It shows one parameter at a time so different units and scales are never conflated. Pages lazy-load the Recharts component, and every chart includes a textual latest-value/trend summary for accessibility. Sensor cards control the chart through ordinary React state; no event bus or duplicated telemetry store is introduced.
 
 ## Future PWA and offline architecture
 
