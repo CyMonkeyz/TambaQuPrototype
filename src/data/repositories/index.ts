@@ -1,23 +1,26 @@
 import {
-  MockActionRepository,
-  MockAlertRepository,
-  MockFarmRepository,
-  MockPondRepository,
-  MockRiskRepository,
-  MockSensorRepository,
+  applySimulationStep,
   resetMockDemoState,
 } from "./mock";
+import { createOfflineFirstRepositories } from "./offlineFirst";
+import { remoteRepositories } from "./remote";
+import { getRepositoryRevision, subscribeRepository } from "./revision";
+import { resetOfflineDataFromRemote } from "../../services/offline/persistenceService";
+import { useConnectivityStore } from "../../store/connectivity-store";
 
-export const repositories = {
-  farm: new MockFarmRepository(),
-  pond: new MockPondRepository(),
-  sensor: new MockSensorRepository(),
-  risk: new MockRiskRepository(),
-  alert: new MockAlertRepository(),
-  action: new MockActionRepository(),
+export const repositories = createOfflineFirstRepositories(remoteRepositories);
+
+export function resetDemoData() {
+  resetMockDemoState();
+  void resetOfflineDataFromRemote().catch(() =>
+    useConnectivityStore.getState().setHydration("error", false),
+  );
+}
+export {
+  applySimulationStep,
+  getRepositoryRevision,
+  subscribeRepository,
 };
-
-export const resetDemoData = resetMockDemoState;
 
 export type {
   ActionRepository,

@@ -34,6 +34,8 @@ import {
 import { getCompletedRecommendationIds } from "../../services/selectors";
 import { useAppStore } from "../../store/app-store";
 import { formatRelativeDemoTime, formatWibTime } from "../../utils/formatters";
+import { OfflineDataNotice } from "../../components/offline/ConnectivityStatus";
+import { getEffectiveConnectivity, useConnectivityStore } from "../../store/connectivity-store";
 
 const RiskTrendChart = lazy(() =>
   import("../../components/domain/RiskTrendChart").then((module) => ({
@@ -55,10 +57,10 @@ export function PondBrainPage() {
   const [range, setRange] = useState<MonitoringRange>("24h");
   const [selectedRecommendation, setSelectedRecommendation] =
     useState<Recommendation | null>(null);
-  const [actionTimestamp, setActionTimestamp] = useState(
-    new Date().toISOString(),
-  );
+  const [actionTimestamp, setActionTimestamp] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  useConnectivityStore();
+  const appOffline = getEffectiveConnectivity() === "offline";
 
   useEffect(() => {
     selectPond(pondId);
@@ -123,7 +125,7 @@ export function PondBrainPage() {
     contributors,
   });
   const openConfirmation = (recommendation: Recommendation) => {
-    setActionTimestamp(new Date().toISOString());
+    setActionTimestamp(data.reading.timestamp);
     setSelectedRecommendation(recommendation);
     trackProductEvent({
       name: "recommendation_viewed",
@@ -171,6 +173,15 @@ export function PondBrainPage() {
           </Link>
         }
       />
+      <OfflineDataNotice timestamp={data.reading.timestamp} />
+      {data.device.connectionStatus !== "online" && (
+        <Card className="border-[var(--risk-warning)] bg-[var(--risk-warning-bg)] p-4 shadow-none">
+          <p className="text-sm font-semibold text-risk-warning">Data Terbatas</p>
+          <p className="mt-1 text-xs leading-5 text-foreground-muted">
+            Koneksi perangkat {data.device.connectionStatus === "offline" ? "terputus" : "melemah"}. Analisis menggunakan data terakhir dan perlu diverifikasi di lapangan.
+          </p>
+        </Card>
+      )}
       <PondSelector
         ponds={farmMonitoring.data.ponds}
         selectedPondId={data.pond.id}
@@ -206,6 +217,7 @@ export function PondBrainPage() {
             change={riskChange.change}
             freshness={freshness.state}
             confidence={confidence}
+            cached={appOffline}
             lastSyncLabel={formatRelativeDemoTime(
               data.device.lastSyncAt,
               data.reading.timestamp,
@@ -218,6 +230,7 @@ export function PondBrainPage() {
             title="Tindakan Direkomendasikan"
             description="Urutan dibuat dari faktor risiko terbesar dan tingkat urgensi saat ini."
           />
+          {appOffline && <p className="mb-3 rounded-xl bg-[#fff7e4] p-3 text-xs leading-5 text-[#725116]">Rekomendasi berdasarkan analisis terakhir yang tersimpan. PondBrain tidak membuat klaim analisis baru selama data terbaru belum tersedia.</p>}
           <div className="grid gap-3 lg:grid-cols-3">
             {data.recommendations.map((recommendation) => (
               <RecommendationCard

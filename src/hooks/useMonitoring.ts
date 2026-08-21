@@ -5,6 +5,7 @@ import type {
   PondMonitoringOverview,
 } from "../domain/monitoring";
 import { useRepositoryData } from "./useRepositoryData";
+import { useDemoRepositoryRevision } from "./useDemoRepositoryRevision";
 
 async function loadPondOverview(
   pondId: string,
@@ -49,9 +50,17 @@ async function loadPondMonitoring(
 }
 
 export function useFarmMonitoring(farmId: string) {
-  return useRepositoryData(() => loadFarmMonitoring(farmId), farmId);
+  const revision = useDemoRepositoryRevision();
+  return useRepositoryData(
+    () => loadFarmMonitoring(farmId),
+    `${farmId}:${revision}`,
+  );
 }
 
 export function usePondMonitoring(pondId: string) {
-  return useRepositoryData(() => loadPondMonitoring(pondId), pondId);
+  const revision = useDemoRepositoryRevision();
+  return useRepositoryData(
+    () => loadPondMonitoring(pondId),
+    `${pondId}:${revision}`,
+  );
 }

@@ -32,6 +32,7 @@
 html { min-width: 320px; background: var(--background); }
 body { margin: 0; min-width: 320px; min-height: 100vh; overflow-x: hidden; }
 button, input { font: inherit; }
+select { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 3px solid color-mix(in srgb, var(--ring) 38%, transparent); outline-offset: 2px; }
 ::selection { background: #bfece6; color: var(--foreground); }
@@ -48,4 +49,20 @@ button, a { -webkit-tap-highlight-color: transparent; }
   --color-risk-safe: var(--risk-safe);
   --color-risk-warning: var(--risk-warning);
   --color-risk-critical: var(--risk-critical);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+@media print {
+  aside, body > nav, .no-print { display: none !important; }
+  body, html { background: white !important; }
+  main { max-width: none !important; padding: 0 !important; }
+  article { break-inside: avoid; box-shadow: none !important; }
 }

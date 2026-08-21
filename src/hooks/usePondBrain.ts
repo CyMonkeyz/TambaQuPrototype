@@ -5,6 +5,7 @@ import type { Pond } from "../domain/pond";
 import type { Recommendation, RiskAssessment } from "../domain/risk";
 import type { SensorDevice, SensorReading } from "../domain/sensor";
 import { useRepositoryData } from "./useRepositoryData";
+import { useDemoRepositoryRevision } from "./useDemoRepositoryRevision";
 
 export interface PondBrainData {
   pond: Pond;
@@ -45,5 +46,9 @@ async function loadPondBrainData(
 }
 
 export function usePondBrain(pondId: string) {
-  return useRepositoryData(() => loadPondBrainData(pondId), pondId);
+  const revision = useDemoRepositoryRevision();
+  return useRepositoryData(
+    () => loadPondBrainData(pondId),
+    `${pondId}:${revision}`,
+  );
 }

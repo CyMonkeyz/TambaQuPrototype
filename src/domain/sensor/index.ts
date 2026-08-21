@@ -1,4 +1,10 @@
 export type DeviceConnectionStatus = "online" | "offline" | "degraded";
+export type DeviceHealthStatus =
+  | "healthy"
+  | "attention"
+  | "offline"
+  | "maintenance";
+export type SignalStrength = "excellent" | "good" | "fair" | "poor" | "none";
 export type SensorParameter =
   | "dissolvedOxygen"
   | "ph"
@@ -15,6 +21,11 @@ export interface SensorDevice {
   batteryPercentage: number;
   lastSyncAt: string;
   firmwareVersion: string;
+  healthStatus: DeviceHealthStatus;
+  signalStrength: SignalStrength;
+  installationDate: string;
+  lastCalibrationAt: string;
+  nextCalibrationAt: string;
 }
 
 export interface SensorReading {

@@ -1,4 +1,4 @@
-import { CheckCircle2 } from "lucide-react";
+import { AlertTriangle, CheckCircle2, CircleDashed } from "lucide-react";
 import type { ActionLog } from "../../domain/action";
 import { formatDate, formatWibTime } from "../../utils/formatters";
 
@@ -38,6 +38,10 @@ export function ActionTimeline({
               {action.notes}
             </p>
           )}
+          <p className={`mt-2 inline-flex items-center gap-1 text-xs font-semibold ${action.syncStatus === "synced" ? "text-risk-safe" : action.syncStatus === "failed" ? "text-risk-critical" : "text-risk-warning"}`}>
+            {action.syncStatus === "synced" ? <CheckCircle2 size={13} /> : action.syncStatus === "failed" ? <AlertTriangle size={13} /> : <CircleDashed size={13} />}
+            {action.syncStatus === "synced" ? "Tersinkron" : action.syncStatus === "failed" ? "Sinkronisasi gagal" : "Menunggu sinkronisasi"}
+          </p>
         </li>
       ))}
     </ol>

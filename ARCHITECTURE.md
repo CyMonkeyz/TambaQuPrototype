@@ -1,4 +1,4 @@
-# TambaQu Architecture — Phases 1–3
+# TambaQu Architecture — Phases 1–5
 
 ## Stack
 
@@ -70,7 +70,7 @@ RiskAssessment -> Recommendation -> confirmation -> ActionLog
 Alert(new) -> acknowledged -> follow-up recorded
 ```
 
-The mock repositories own mutable demo state and persist only alerts and actions to versioned `localStorage`. This is demo persistence, not an offline queue. A confirmed reset restores deterministic fixtures. Zustand remains limited to session and selection preferences.
+The simulation remote adapter owns mutable demo state. Phase 5 wraps it with offline-first repositories backed by IndexedDB. Versioned `localStorage` remains a compatibility layer for the simulation adapter; it is not the sync outbox. A confirmed reset restores deterministic fixtures and reseeds IndexedDB. Zustand remains split between session/UI state, simulation controls, and connectivity/sync presentation state.
 
 ## Future ML replacement
 
@@ -81,12 +81,77 @@ Future:  Sensor Data -> Backend Feature Pipeline -> Validated ML Model -> Risk A
 
 The frontend consumes the same explainable `RiskAssessment` contract in both cases. A future model must still provide score, level, contributors, and summary; replacing the engine must not turn the UI into a black box.
 
-## Future PWA and offline architecture
+## Phase 4 simulation layer
 
-The planned offline path is a service worker for application-shell assets, IndexedDB for explicitly cacheable repository responses, and an action command queue with idempotency keys. Pending commands map naturally to `ActionLog.syncStatus`. A synchronization coordinator can replay commands when connectivity returns and repositories can expose cache metadata. None of this is active through Phase 3, avoiding premature cache and conflict semantics.
+```text
+Scenario configuration
+        ↓
+Deterministic simulation engine
+        ↓
+Simulation remote adapter / repository state
+        ↓
+RiskAssessment → Recommendation Engine
+        ↓
+Repository subscription → UI
+```
+
+Simulation control state is a dedicated Zustand store. A timer advances only once per meaningful scenario step; pages never receive animation-frame telemetry and never mutate the DOM directly. The overlay can target any pond supported by a scenario definition. In production, the simulation remote adapter can be replaced without changing page contracts:
+
+```text
+Prototype: Simulator → SensorReading Repository
+Production: IoT Gateway → Backend → SensorReading API → SensorReading Repository
+```
+
+## Phase 5 PWA architecture
+
+Cache Storage and IndexedDB have separate responsibilities:
+
+- Workbox precaches the versioned HTML, JavaScript, CSS, local icons, and critical assets. SPA navigation falls back to the precached `index.html` after a successful online visit.
+- `TambaQuDB` (Dexie schema version 1) stores farms, ponds, sensor readings, risk assessments, alerts, recommendations, actions, devices, sync metadata, and the mutation outbox.
+- Sensor history is bounded to 720 records per pond in the prototype; it is not an unlimited event store.
+- The app renders from the local repository boundary and performs remote/demo refresh without blocking on outbox completion.
+
+```text
+UI
+ ↓
+Offline-First Repository
+ ├── IndexedDB (immediate/cached domain read)
+ └── Mock + Simulation Remote Adapter (prototype)
+
+Mutation
+ ↓
+Local transaction
+ ├── update ActionLog or Alert
+ └── insert idempotent OutboxItem
+ ↓
+Sequential Sync Manager
+ ↓
+Remote Adapter
+```
+
+The service worker contains no domain logic. Mutation requests are never blindly cached. Future monitoring GET endpoints should use Network First with a short timeout and cached fallback; future POST/PATCH operations must remain outbox-backed.
+
+## Outbox and sync lifecycle
+
+Supported operations are `ACTION_LOG_CREATE`, `ALERT_ACKNOWLEDGE`, and `ALERT_RESOLVE`. Each item has a stable outbox ID plus a unique `clientMutationId` for future backend idempotency. Action creation and its outbox insert share one Dexie transaction. Processing is sequential and oldest-first. Successful items are removed and actions become `synced`; failed items remain observable with attempt count and error, use bounded 1s/3s/10s retries, and support manual retry.
+
+Append-only action semantics minimize future conflicts. Alert acknowledgement uses the latest acknowledged state. Production still needs server versioning and explicit conflict policy; the prototype does not implement CRDTs.
+
+## Connectivity separation
+
+Application connectivity and sensor-device connectivity are independent. `navigator.onLine` is only a browser hint. Demo override can simulate Online, Offline, or Degraded application connectivity without changing `SensorDevice.connectionStatus` and without actually disconnecting the browser. In production a sensor gateway may continue sending data to the cloud while the farmer phone is offline.
+
+## Startup and failure fallback
+
+```text
+Launch → open IndexedDB → seed once if empty → render cached domain data
+       → observe connectivity → refresh demo remote → process outbox
+```
+
+Sync never blocks initial rendering. If IndexedDB is unavailable (including restrictive private-browsing environments), the app marks offline storage unavailable and continues through the in-memory/remote adapter while online. IndexedDB is not secure secret storage; no credentials, passwords, or API keys are stored there.
 
 ## Why these choices
 
 The architecture favors low coupling and progressive capability. React Router makes desktop/mobile navigation share URLs. Repository contracts keep demo data replaceable. Deterministic fixtures make demonstrations and future visual tests reproducible. Semantic tokens allow risk/status styling to change centrally. Minimal Zustand state prevents stale duplicated server data.
 
-The deployment worker only serves the already-built static application and falls back to `index.html` for client-side routes. It does not introduce a backend, API, authentication, or PWA behavior.
+The deployment worker serves the built static application and falls back to `index.html` for online client-side routes. Workbox handles cached navigation after a prior successful load. Neither layer introduces a backend, production authentication, MQTT, or real inference.

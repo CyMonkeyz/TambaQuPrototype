@@ -1,6 +1,6 @@
 # TambaQu
 
-TambaQu is a responsive aquaculture decision-support web application for monitoring and mitigating operational risk in vannamei shrimp ponds. Phase 3 connects monitoring data to explainable risk, recommendations, farmer actions, and action history.
+TambaQu is a responsive, installable aquaculture decision-support PWA for monitoring and mitigating operational risk in vannamei shrimp ponds. Phase 5 connects the Phase 4 competition simulator and operations workspace to cached domain data, offline mutations, and reconnect sync.
 
 > All values shown in the current application are synthetic and intended only for product demonstration. They are not field observations, validated scientific predictions, or automated diagnoses.
 
@@ -27,6 +27,8 @@ Open the local address printed by Vite, choose **Masuk sebagai Demo**, and enter
 | `npm test`        | Run monitoring and decision-support unit tests        |
 | `npm run build`   | Run TypeScript checks and create the production build |
 | `npm run preview` | Preview the production build locally                  |
+| `npm run verify:pwa` | Verify manifest, icons, service worker, and precache |
+| `npm run generate:pwa-assets` | Rebuild icons from the local TambaQu SVG source |
 
 ## Project map
 
@@ -55,6 +57,9 @@ See [PRODUCT_SPEC.md](./PRODUCT_SPEC.md), [ARCHITECTURE.md](./ARCHITECTURE.md), 
 - `/app/ponds/:pondId` — detailed pond monitoring.
 - `/app/pondbrain?pond=:pondId` — explainable risk and farmer-action workflow.
 - `/app/alerts?alert=:alertId` — alert center and contextual detail.
+- `/app/reports` — local-data operational reports and print view.
+- `/app/devices` — device health, connection, battery, signal, and calibration.
+- `/app/demo-control` — demo-only simulator and application-connectivity controls.
 
 ### Test the dashboard
 
@@ -72,6 +77,30 @@ Start the development server, choose **Masuk sebagai Demo**, then verify that Ko
 
 Enter demo mode, open Kolam B, and choose **Lihat Analisis**. Confirm Risk Score 67, inspect DO 42%, Amonia 27%, Suhu 18%, and Konteks Lingkungan 13%, then complete **Periksa dan optimalkan aerasi** with an optional note. Open Peringatan, review the Kolam B alert, and return to PondBrain or Pond Detail to see the shared state reflected.
 
+## Phase 4 operations and simulation
+
+- Desktop Operations Dashboard with derived farm KPIs, priority sorting, multi-pond table, risk trend, active alerts, device health, and recent actions; the Phase 2 mobile dashboard remains intact.
+- Deterministic Stable, Early Warning, Warning Escalation, Critical, Recovery, and Device Failure scenarios with start/pause/step/reset controls.
+- Device Management, operational Reports, print/save-PDF CSS, Presentation Mode, and a navigation-safe shared simulation repository.
+
+See [DEMO_SCRIPT.md](./DEMO_SCRIPT.md) for the 90-second competition flow.
+
+## Phase 5 PWA and offline-first flow
+
+The production build generates a Workbox service worker and manifest. Dexie stores the latest synthetic farm snapshot and a persistent mutation outbox. Offline actions and alert acknowledgement update immediately with `pending` state; reconnect processes oldest-first and prevents duplicate outbox items.
+
+### Test PWA offline
+
+```bash
+npm run build
+npm run verify:pwa
+npm run preview
+```
+
+Open the preview online, enter Demo, and visit the main routes. Then use browser DevTools Offline mode and refresh `/app/dashboard` or `/app/ponds/pond-b`. This must be tested from the production preview, not only `npm run dev`. The in-app Demo Control connection toggle tests application data/sync behavior but does not disconnect the browser.
+
+Settings contains install, sync, offline storage deletion, version, and reset controls. A fresh device must visit once online before offline capability can be guaranteed. See [PWA.md](./PWA.md) and [OFFLINE_DEMO.md](./OFFLINE_DEMO.md).
+
 ## Phase boundary
 
-This phase deliberately excludes realtime simulation, expanded reports and device operations, a service worker, final web manifest, IndexedDB, offline queue, push notifications, real authentication, backend/API, MQTT, real weather data, WhatsApp, and machine learning. The current boundaries are designed so those capabilities can be added without coupling pages to mock data.
+This phase deliberately excludes push notifications, production authentication, backend/API, MQTT/real IoT, real weather feeds, WhatsApp, payments, multi-tenant security, real ML, and complex cloud conflict resolution. Phase 6 is reserved for final QA, accessibility, performance/security review, visual polish, and deployment hardening.

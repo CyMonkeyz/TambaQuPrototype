@@ -10,6 +10,7 @@ import { PondDetailPage } from "../../pages/PondDetail/PondDetailPage";
 import { PondsPage } from "../../pages/Ponds/PondsPage";
 import { ReportsPage } from "../../pages/Reports/ReportsPage";
 import { SettingsPage } from "../../pages/Settings/SettingsPage";
+import { DemoControlPage } from "../../pages/DemoControl/DemoControlPage";
 import { useAppStore } from "../../store/app-store";
 
 function SessionGuard() {
@@ -42,6 +43,7 @@ export function AppRouter() {
           <Route path="reports" element={<ReportsPage />} />
           <Route path="devices" element={<DevicesPage />} />
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="demo-control" element={<DemoControlPage />} />
         </Route>
       </Route>
       <Route path="*" element={<NotFoundPage />} />

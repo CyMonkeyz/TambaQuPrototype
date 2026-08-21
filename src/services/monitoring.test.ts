@@ -58,6 +58,11 @@ function pondItem(
       batteryPercentage: 80,
       lastSyncAt: sync,
       firmwareVersion: "1",
+      healthStatus: "healthy",
+      signalStrength: "good",
+      installationDate: "2026-03-12T02:00:00.000Z",
+      lastCalibrationAt: "2026-08-02T02:00:00.000Z",
+      nextCalibrationAt: "2026-09-01T02:00:00.000Z",
     },
   } satisfies PondMonitoringOverview;
 }

@@ -1,4 +1,4 @@
-# TambaQu Product Specification — Phases 1–3
+# TambaQu Product Specification — Phases 1–5
 
 ## Product objective
 
@@ -33,6 +33,16 @@ Phase 2 adds the mature monitoring command center: farm overview, selected-pond 
 
 Phase 3 adds the decision-support loop: explainable PondBrain risk analysis, deterministic recommendations, action confirmation and audit history, a complete alert-review lifecycle, and shared demo-state persistence. Monitoring, risk assessment, alert, recommendation, and farmer action remain distinct domain concepts.
 
+Phase 4 adds the desktop farm-operations command center, multi-pond priorities, device management, operational reports, a deterministic competition simulator, reset, and presentation mode.
+
+Phase 5 makes the product installable and useful after a prior online visit. The application shell and local brand assets are cached, domain snapshots are stored in IndexedDB, and farmer actions/alert acknowledgement can be queued locally and synchronized after reconnect.
+
+## Offline user story
+
+As a farmer, I can continue seeing the latest stored pond data and record actions when application connectivity is unavailable. The interface labels cached analysis and stale data explicitly. When connectivity returns, pending mutations synchronize automatically; failure remains visible and retryable.
+
+Application offline does not imply that a pond sensor is offline. Those states retain separate labels and operational meaning.
+
 ## PondBrain user journey
 
 1. Select a pond or preserve the context from Dashboard, Alert Detail, or Pond Detail.
@@ -50,9 +60,13 @@ An alert is reviewed separately from its risk assessment. Acknowledgement record
 
 The analytics contract is intentionally provider-free. Future measurement can include alert response time, recommendation adoption rate, action completion rate, PondBrain engagement, and time-to-action without coupling UI components to an external analytics SDK.
 
+## Report claim boundary
+
+Operational reports describe synthetic readings, risk states, alerts, device availability, recommendations, and recorded demo actions. They do not claim disease prevention, survival improvement, or economic savings. Those outcomes require validated field and financial data.
+
 ## Non-goals
 
-No realtime simulator, expanded report generation, advanced device management, real authentication, backend, MQTT, WhatsApp integration, scientific/ML inference, notification server, PWA installation, offline persistence, or background synchronization is implemented in this phase.
+No real authentication, backend, MQTT/IoT gateway, WhatsApp integration, scientific/ML inference, notification server, payment, multi-tenant security, or production conflict-resolution system is implemented. Service-worker Background Sync is not required for reliability; app-level sync is the baseline.
 
 ## Terminology
 

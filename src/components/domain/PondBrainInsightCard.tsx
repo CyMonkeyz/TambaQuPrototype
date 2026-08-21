@@ -8,12 +8,14 @@ export function PondBrainInsightCard({
   freshness,
   confidence,
   lastSyncLabel,
+  cached = false,
 }: {
   risk: RiskAssessment;
   change: number;
   freshness: DataFreshness;
   confidence: number;
   lastSyncLabel: string;
+  cached?: boolean;
 }) {
   const insight =
     risk.level === "critical"
@@ -40,7 +42,7 @@ export function PondBrainInsightCard({
         </div>
       </div>
       <p className="mt-4 text-sm leading-7 text-foreground-muted">{insight}</p>
-      {freshness !== "fresh" && (
+      {(freshness !== "fresh" || cached) && (
         <div className="mt-4 flex gap-3 rounded-xl bg-[var(--risk-warning-bg)] p-4 text-sm">
           <DatabaseZap
             className="mt-0.5 shrink-0 text-risk-warning"
@@ -58,7 +60,7 @@ export function PondBrainInsightCard({
       <div className="mt-4 rounded-xl bg-surface-muted p-4">
         <div className="flex items-center justify-between gap-4 text-sm">
           <span className="font-semibold">Data Confidence</span>
-          <strong>{confidence}%</strong>
+          <strong>{cached ? "Terbatas" : `${confidence}%`}</strong>
         </div>
         <p className="mt-1 text-xs leading-5 text-foreground-muted">
           Berdasarkan kelengkapan data, freshness sensor, dan jumlah faktor yang

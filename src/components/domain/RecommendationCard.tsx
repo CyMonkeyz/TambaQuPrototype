@@ -41,6 +41,9 @@ export function RecommendationCard({
             <p className="mt-1 text-xs text-foreground-muted">
               {formatWibTime(action.performedAt)} · oleh {performerName}
             </p>
+            <p className={`mt-1 text-xs font-semibold ${action.syncStatus === "synced" ? "text-risk-safe" : action.syncStatus === "failed" ? "text-risk-critical" : "text-risk-warning"}`}>
+              {action.syncStatus === "synced" ? "Tersinkron" : action.syncStatus === "failed" ? "Sinkronisasi gagal" : "Menunggu sinkronisasi"}
+            </p>
           </div>
         </div>
       ) : (

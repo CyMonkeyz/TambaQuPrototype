@@ -16,7 +16,9 @@ The fixtures exercise safe, warning, critical, degraded-device, alert, recommend
 
 These names are demo identities and do not imply a real account or farm deployment.
 
-## Pond scenarios
+## Reset baseline and pond scenarios
+
+An explicit reset returns Kolam B to 22 / Aman with DO 5.8 mg/L, pH 7.9, temperature 29.0 °C, salinity 19 ppt, ammonia 0.03 mg/L, and nitrite 0.02 mg/L. Kolam C remains the pre-existing critical comparison pond.
 
 | Pond    | Score / level | Scenario                                                                                                                                                                                                                                             |
 | ------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -44,8 +46,23 @@ Risk labels follow the UX contract: Aman 0–39, Waspada 40–69, and Kritis 70�
 
 Recommendation rules inspect risk level and contributors. They do not diagnose disease, prescribe universal biological thresholds, or claim future outcomes.
 
+## Deterministic simulator scenarios
+
+| Scenario | Risk progression | DO progression | Ammonia progression | Expected event |
+| --- | --- | --- | --- | --- |
+| Stable | 22 | 5.8 | 0.03 | No new alert |
+| Early Warning | 22 → 34 → 48 | 5.8 → 5.2 → 4.8 | 0.03 → 0.06 → 0.09 | One warning alert |
+| Warning Escalation | 22 → 34 → 48 → 58 → 67 | 5.8 → 5.2 → 4.8 → 4.5 → 4.2 | 0.03 → 0.06 → 0.09 → 0.11 → 0.14 | Warning alert remains unique; aeration recommendation appears |
+| Critical | 67 → 76 → 84 | 4.2 → 3.6 → 3.0 | 0.14 → 0.17 → 0.20 | One critical alert |
+| Recovery | 84 → 76 → 61 → 48 | 3.0 → 3.6 → 4.3 → 4.8 | 0.20 → 0.17 → 0.12 → 0.09 | Copy says indicators decrease, not that disease was prevented |
+| Device Failure | Online → Degraded → Offline → Online | Stable snapshot | Stable snapshot | Demonstrates app/device contingency separation |
+
+The warning contributor mix is always DO 42%, ammonia 27%, temperature 18%, and context 13%. Scenario steps append meaningful sensor readings to history and never use random values.
+
 ## Alert and action scenarios
 
 The initial alert state contains one active critical alert, two active warning alerts, and three historical follow-up records. The Kolam B risk alert starts as **Belum ditinjau** for the golden flow. Existing action fixtures provide auditable history while the primary aeration recommendation remains pending.
 
-Completing an action or acknowledging an alert writes a versioned demo-only state to browser `localStorage`. **Reset Data Demo** restores these fixtures. No IndexedDB, outbox, background sync, or remote persistence is involved.
+Completing an action or acknowledging an alert writes through the offline-first repository. Online mutations become synced immediately. Offline mutations are committed atomically to IndexedDB with an outbox item and display `pending` until reconnect. The mock simulation adapter still uses versioned `localStorage` internally, but IndexedDB is the Phase 5 domain cache and outbox.
+
+Cached/offline values remain the same synthetic competition dataset. Caching does not make them field observations, live sensor measurements, or validated scientific results.

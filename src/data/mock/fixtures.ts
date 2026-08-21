@@ -179,6 +179,11 @@ export const demoDevices: SensorDevice[] = [
     batteryPercentage: 86,
     lastSyncAt: DEMO_NOW,
     firmwareVersion: "1.4.2",
+    healthStatus: "healthy",
+    signalStrength: "excellent",
+    installationDate: "2026-03-12T02:00:00.000Z",
+    lastCalibrationAt: "2026-08-02T02:00:00.000Z",
+    nextCalibrationAt: "2026-09-01T02:00:00.000Z",
   },
   {
     id: "device-b",
@@ -188,6 +193,11 @@ export const demoDevices: SensorDevice[] = [
     batteryPercentage: 51,
     lastSyncAt: "2026-08-20T14:36:00.000Z",
     firmwareVersion: "1.4.2",
+    healthStatus: "attention",
+    signalStrength: "fair",
+    installationDate: "2026-03-14T02:00:00.000Z",
+    lastCalibrationAt: "2026-08-05T02:00:00.000Z",
+    nextCalibrationAt: "2026-09-04T02:00:00.000Z",
   },
   {
     id: "device-c",
@@ -197,6 +207,11 @@ export const demoDevices: SensorDevice[] = [
     batteryPercentage: 73,
     lastSyncAt: "2026-08-20T14:41:00.000Z",
     firmwareVersion: "1.4.2",
+    healthStatus: "healthy",
+    signalStrength: "good",
+    installationDate: "2026-03-18T02:00:00.000Z",
+    lastCalibrationAt: "2026-08-08T02:00:00.000Z",
+    nextCalibrationAt: "2026-09-07T02:00:00.000Z",
   },
   {
     id: "device-d",
@@ -206,6 +221,11 @@ export const demoDevices: SensorDevice[] = [
     batteryPercentage: 18,
     lastSyncAt: "2026-08-20T12:14:00.000Z",
     firmwareVersion: "1.3.9",
+    healthStatus: "maintenance",
+    signalStrength: "none",
+    installationDate: "2026-03-21T02:00:00.000Z",
+    lastCalibrationAt: "2026-07-28T02:00:00.000Z",
+    nextCalibrationAt: "2026-08-27T02:00:00.000Z",
   },
 ];
 

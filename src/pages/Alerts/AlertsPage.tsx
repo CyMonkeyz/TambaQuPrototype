@@ -18,6 +18,7 @@ import { toast } from "../../components/ui/toast-api";
 import { repositories } from "../../data/repositories";
 import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 import { useRepositoryData } from "../../hooks/useRepositoryData";
+import { useDemoRepositoryRevision } from "../../hooks/useDemoRepositoryRevision";
 import { trackProductEvent } from "../../services/analytics";
 import { filterAlerts, type AlertFilter } from "../../services/selectors";
 import { useAppStore } from "../../store/app-store";
@@ -59,9 +60,10 @@ export function AlertsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filter, setFilter] = useState<AlertFilter>("all");
   const [isUpdating, setIsUpdating] = useState(false);
+  const revision = useDemoRepositoryRevision();
   const { data, isLoading, error, retry } = useRepositoryData(
     () => loadAlertCenter(farmId),
-    farmId,
+    `${farmId}:${revision}`,
   );
   const selectedId = searchParams.get("alert");
   const selected = data?.find((item) => item.alert.id === selectedId) ?? null;
@@ -89,7 +91,7 @@ export function AlertsPage() {
     if (!selected || !user) return;
     setIsUpdating(true);
     try {
-      const timestamp = new Date().toISOString();
+      const timestamp = selected.reading.timestamp;
       if (operation === "acknowledge") {
         await repositories.alert.acknowledge(
           selected.alert.id,

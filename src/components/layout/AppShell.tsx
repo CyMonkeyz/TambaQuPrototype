@@ -1,14 +1,38 @@
-import { MapPin } from "lucide-react";
-import { Outlet } from "react-router-dom";
+import { MapPin, Presentation } from "lucide-react";
+import { Link, Outlet } from "react-router-dom";
 import { useAppStore } from "../../store/app-store";
+import { useSimulationStore } from "../../store/simulation-store";
 import { AppLogo } from "../common/AppLogo";
 import { Avatar } from "../ui/Avatar";
 import { MobileNavigation } from "./MobileNavigation";
 import { Sidebar } from "./Sidebar";
+import { DemoStatusBar } from "../simulation/DemoStatusBar";
+import { Button } from "../ui/Button";
+import { ConnectivityIndicator, OfflineBanner } from "../offline/ConnectivityStatus";
 
 export function AppShell() {
   const user = useAppStore((state) => state.activeUser);
   const farm = useAppStore((state) => state.activeFarm);
+  const presentationMode = useSimulationStore((state) => state.presentationMode);
+  const togglePresentationMode = useSimulationStore((state) => state.togglePresentationMode);
+  if (presentationMode) {
+    return (
+      <div className="min-h-screen">
+        <header className="no-print flex h-14 items-center justify-between border-b border-border bg-white px-5 lg:px-8">
+          <AppLogo />
+          <nav className="flex items-center gap-3 text-xs font-semibold">
+            <Link className="text-primary" to="/app/dashboard">Dashboard</Link>
+            <Link className="hidden text-primary sm:inline" to="/app/demo-control">Demo Control</Link>
+            <Button className="min-h-9 px-3" variant="secondary" leadingIcon={<Presentation size={15} />} onClick={togglePresentationMode}>Keluar</Button>
+            <ConnectivityIndicator />
+          </nav>
+        </header>
+        <DemoStatusBar />
+        <OfflineBanner />
+        <main className="mx-auto max-w-[1800px] p-4 lg:p-7"><Outlet /></main>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen lg:flex">
       <Sidebar />
@@ -23,9 +47,11 @@ export function AppShell() {
               {farm?.name} · {farm?.location}
             </span>
           </div>
-          <Avatar name={user?.name ?? "Pengguna TambaQu"} />
+          <div className="flex items-center gap-1"><ConnectivityIndicator /><Avatar name={user?.name ?? "Pengguna TambaQu"} /></div>
         </header>
-        <main className="mx-auto max-w-[1360px] p-5 lg:p-8">
+        <DemoStatusBar />
+        <OfflineBanner />
+        <main className="mx-auto max-w-[1600px] p-5 lg:p-8">
           <Outlet />
         </main>
       </div>

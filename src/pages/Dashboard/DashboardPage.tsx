@@ -37,6 +37,7 @@ import {
 import { useAppStore } from "../../store/app-store";
 import { formatWibTime, getSensorMeta } from "../../utils/formatters";
 import { DEFAULT_DEMO_POND_ID } from "../../constants/demo";
+import { OperationsDashboard } from "../../components/operations/OperationsDashboard";
 
 const WaterQualityChart = lazy(
   () => import("../../components/domain/WaterQualityChart"),
@@ -109,7 +110,11 @@ export function DashboardPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <>
+      <div className="hidden lg:block">
+        <OperationsDashboard data={data} farm={farm} user={user} />
+      </div>
+      <div className="space-y-6 lg:hidden">
       <PageHeader
         eyebrow="Kamis malam, 20 Agustus 2026"
         title={`Selamat malam, ${user?.name.split(" ")[0] ?? "Andi"}`}
@@ -308,6 +313,7 @@ export function DashboardPage() {
           </div>
         </Card>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
