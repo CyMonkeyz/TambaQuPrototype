@@ -32,7 +32,7 @@ function sitesWorkerEntry(): Plugin {
 // https://vite.dev/config/
 export default defineConfig({
   define: {
-    __APP_VERSION__: JSON.stringify(process.env.npm_package_version ?? "0.5.0-demo"),
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version ?? "0.6.0-demo"),
   },
   plugins: [
     react(),
@@ -40,6 +40,7 @@ export default defineConfig({
     VitePWA({
       registerType: "prompt",
       injectRegister: null,
+      devOptions: { enabled: false },
       includeAssets: [
         "favicon.ico",
         "tambaqu-logo.svg",

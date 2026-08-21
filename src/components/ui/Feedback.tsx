@@ -1,15 +1,22 @@
 import { AlertCircle, Inbox } from "lucide-react";
 import { Button } from "./Button";
 
-export function LoadingSkeleton({ rows = 3 }: { rows?: number }) {
+export function LoadingSkeleton({
+  rows = 3,
+  label = "Memuat data",
+}: {
+  rows?: number;
+  label?: string;
+}) {
   return (
-    <div className="grid gap-4" aria-label="Memuat data">
+    <div className="grid gap-4" role="status" aria-label={label} aria-busy="true">
       {Array.from({ length: rows }, (_, index) => (
         <div
           key={index}
           className="h-28 animate-pulse rounded-2xl border border-border bg-surface-muted"
         />
       ))}
+      <span className="sr-only">{label}</span>
     </div>
   );
 }

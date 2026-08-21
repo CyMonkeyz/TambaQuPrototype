@@ -183,7 +183,34 @@ function readStoredState() {
   if (typeof window === "undefined") return null;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as PersistedDemoState) : null;
+    const parsed: unknown = raw ? JSON.parse(raw) : null;
+    if (!parsed || typeof parsed !== "object") return null;
+    const candidate = parsed as Partial<PersistedDemoState>;
+    const valid =
+      Array.isArray(candidate.alerts) &&
+      Array.isArray(candidate.actions) &&
+      typeof candidate.readingHistory === "object" &&
+      candidate.readingHistory !== null &&
+      Object.values(candidate.readingHistory).every(Array.isArray) &&
+      typeof candidate.risks === "object" &&
+      candidate.risks !== null &&
+      Object.values(candidate.risks).every(
+        (risk) =>
+          risk &&
+          typeof risk.score === "number" &&
+          typeof risk.level === "string" &&
+          Array.isArray(risk.contributors),
+      ) &&
+      typeof candidate.devices === "object" &&
+      candidate.devices !== null &&
+      Object.values(candidate.devices).every(
+        (device) =>
+          device &&
+          typeof device.pondId === "string" &&
+          typeof device.lastSyncAt === "string",
+      ) &&
+      typeof candidate.sequence === "number";
+    return valid ? (candidate as PersistedDemoState) : null;
   } catch {
     return null;
   }

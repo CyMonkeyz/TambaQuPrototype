@@ -52,6 +52,32 @@ async function trimSensorHistory() {
   );
 }
 
+async function hasValidOfflineSnapshot() {
+  const [farm, ponds, risks, devices, readingCount] = await Promise.all([
+    offlineDb.farms.get(demoFarm.id),
+    offlineDb.ponds.where("farmId").equals(demoFarm.id).toArray(),
+    offlineDb.riskAssessments.toArray(),
+    offlineDb.devices.toArray(),
+    offlineDb.sensorReadings.count(),
+  ]);
+  return Boolean(
+    farm?.name &&
+      ponds.length === demoFarm.pondIds.length &&
+      readingCount > 0 &&
+      risks.length >= ponds.length &&
+      risks.every(
+        (risk) =>
+          typeof risk.score === "number" && Array.isArray(risk.contributors),
+      ) &&
+      devices.length >= ponds.length &&
+      devices.every(
+        (device) =>
+          typeof device.lastSyncAt === "string" &&
+          typeof device.connectionStatus === "string",
+      ),
+  );
+}
+
 export async function persistRemoteSnapshot() {
   seedSuppressed = false;
   const snapshot = await captureRemoteSnapshot();
@@ -96,7 +122,9 @@ export function initializeOfflineDatabase() {
     try {
       await offlineDb.open();
       const initialized = await offlineDb.syncMeta.get(INITIALIZED_KEY);
-      if (!initialized) await persistRemoteSnapshot();
+      if (!initialized || !(await hasValidOfflineSnapshot())) {
+        await persistRemoteSnapshot();
+      }
       useConnectivityStore.getState().setHydration("ready", true);
       return true;
     } catch {

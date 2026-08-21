@@ -62,7 +62,7 @@ export function PondsPage() {
       <PageHeader
         eyebrow="Monitoring multi-kolam"
         title="Kondisi Kolam"
-        description={`Bandingkan tingkat risiko, kualitas air, dan kesehatan device di ${farm?.name}.`}
+        description={`Bandingkan tingkat risiko, kualitas air, dan kesehatan perangkat di ${farm?.name}.`}
       />
       <Card className="mt-7 p-4 shadow-none">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
@@ -163,7 +163,7 @@ export function PondsPage() {
                       <th className="px-4 py-3 font-semibold">DO</th>
                       <th className="px-4 py-3 font-semibold">pH</th>
                       <th className="px-4 py-3 font-semibold">NH3</th>
-                      <th className="px-4 py-3 font-semibold">Device</th>
+                      <th className="px-4 py-3 font-semibold">Perangkat</th>
                       <th className="px-5 py-3 font-semibold">Sinkron</th>
                     </tr>
                   </thead>

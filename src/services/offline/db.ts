@@ -21,7 +21,7 @@ export class TambaQuDatabase extends Dexie {
 
   constructor(name = "TambaQuDB") {
     super(name);
-    this.version(1).stores({
+    const stores = {
       farms: "id",
       ponds: "id,farmId",
       sensorReadings: "id,pondId,timestamp,[pondId+timestamp]",
@@ -32,7 +32,24 @@ export class TambaQuDatabase extends Dexie {
       devices: "id,pondId,connectionStatus,healthStatus",
       outbox: "id,&clientMutationId,entityType,entityId,operation,status,createdAt",
       syncMeta: "key",
-    });
+    };
+    this.version(1).stores(stores);
+    this.version(2)
+      .stores(stores)
+      .upgrade(async (transaction) => {
+        for (const tableName of [
+          "farms",
+          "ponds",
+          "sensorReadings",
+          "riskAssessments",
+          "alerts",
+          "recommendations",
+          "devices",
+          "syncMeta",
+        ]) {
+          await transaction.table(tableName).clear();
+        }
+      });
   }
 }
 

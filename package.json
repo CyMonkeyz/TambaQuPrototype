@@ -1,15 +1,16 @@
 {
   "name": "tambaqu",
   "private": true,
-  "version": "0.5.0-demo",
+  "version": "0.6.0-demo",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "test": "vitest run",
+    "test": "vitest run --pool=threads",
     "preview": "vite preview",
     "verify:pwa": "node scripts/verify-pwa-build.mjs",
+    "analyze:bundle": "node scripts/report-bundle-sizes.mjs",
     "generate:pwa-assets": "pwa-assets-generator --preset minimal-2023 public/tambaqu-logo.svg"
   },
   "dependencies": {
@@ -29,12 +30,14 @@
   "devDependencies": {
     "@openai/sites-vite-plugin": "^0.2.0",
     "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vite-pwa/assets-generator": "^1.0.2",
     "@vitejs/plugin-react": "^6.0.4",
     "fake-indexeddb": "^6.2.5",
+    "jsdom": "^29.1.1",
     "oxlint": "^1.75.0",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.2",

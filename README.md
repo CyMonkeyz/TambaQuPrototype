@@ -1,6 +1,6 @@
 # TambaQu
 
-TambaQu is a responsive, installable aquaculture decision-support PWA for monitoring and mitigating operational risk in vannamei shrimp ponds. Phase 5 connects the Phase 4 competition simulator and operations workspace to cached domain data, offline mutations, and reconnect sync.
+TambaQu is a responsive, installable aquaculture decision-support PWA for monitoring and mitigating operational risk in vannamei shrimp ponds. The final competition MVP combines monitoring, PondBrain explanations, field actions, deterministic simulation, cached domain data, offline mutations, and reconnect synchronization.
 
 > All values shown in the current application are synthetic and intended only for product demonstration. They are not field observations, validated scientific predictions, or automated diagnoses.
 
@@ -28,6 +28,7 @@ Open the local address printed by Vite, choose **Masuk sebagai Demo**, and enter
 | `npm run build`   | Run TypeScript checks and create the production build |
 | `npm run preview` | Preview the production build locally                  |
 | `npm run verify:pwa` | Verify manifest, icons, service worker, and precache |
+| `npm run analyze:bundle` | Report minified and gzip sizes for built JavaScript chunks |
 | `npm run generate:pwa-assets` | Rebuild icons from the local TambaQu SVG source |
 
 ## Project map
@@ -41,7 +42,7 @@ Open the local address printed by Vite, choose **Masuk sebagai Demo**, and enter
 - `src/store` — device-local session and UI preferences only.
 - `src/hooks`, `src/utils`, `src/constants`, `src/styles` — shared application infrastructure.
 
-See [PRODUCT_SPEC.md](./PRODUCT_SPEC.md), [ARCHITECTURE.md](./ARCHITECTURE.md), [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md), and [DEMO_DATA.md](./DEMO_DATA.md) for product decisions and guardrails.
+See [PRODUCT_SPEC.md](./PRODUCT_SPEC.md), [ARCHITECTURE.md](./ARCHITECTURE.md), [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md), and [DEMO_DATA.md](./DEMO_DATA.md) for product decisions and guardrails. Final incident, performance, QA, and presentation records are in [DEBUG_REPORT.md](./DEBUG_REPORT.md), [PERFORMANCE.md](./PERFORMANCE.md), [QA_CHECKLIST.md](./QA_CHECKLIST.md), and [COMPETITION_RUNBOOK.md](./COMPETITION_RUNBOOK.md).
 
 ## Phase 2 monitoring
 
@@ -101,6 +102,15 @@ Open the preview online, enter Demo, and visit the main routes. Then use browser
 
 Settings contains install, sync, offline storage deletion, version, and reset controls. A fresh device must visit once online before offline capability can be guaranteed. See [PWA.md](./PWA.md) and [OFFLINE_DEMO.md](./OFFLINE_DEMO.md).
 
-## Phase boundary
+## Final production notes
 
-This phase deliberately excludes push notifications, production authentication, backend/API, MQTT/real IoT, real weather feeds, WhatsApp, payments, multi-tenant security, real ML, and complex cloud conflict resolution. Phase 6 is reserved for final QA, accessibility, performance/security review, visual polish, and deployment hardening.
+- Production must use HTTPS; localhost is accepted only for development.
+- Direct SPA routes are handled by the Sites worker fallback to `index.html`.
+- `npm run dev` does not register the production service worker. Production PWA behavior must be tested with `npm run build`, `npm run verify:pwa`, and `npm run preview`.
+- `.env.example` intentionally contains no runtime values. Every `VITE_` variable is public client configuration and must never contain a secret.
+- The demo session is device-local and is not production authentication. Do not store sensitive credentials in localStorage or IndexedDB.
+- Route and chart code are split so the initial entry no longer includes every product page.
+
+## Scope boundary
+
+The MVP deliberately excludes push notifications, production authentication, backend/API, MQTT/real IoT, real weather feeds, WhatsApp, payments, multi-tenant security, real ML, and complex cloud conflict resolution.

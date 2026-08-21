@@ -45,4 +45,31 @@ describe("simulation repository overlay", () => {
     applySimulationStep(recovery, recovery.steps[1], 1);
     expect(await repositories.action.getByRecommendationId(action.recommendationId)).toMatchObject({ id: action.id });
   });
+
+  it("remains deterministic across 20 reset and warning cycles", async () => {
+    const scenario = getScenario("warning-escalation");
+    for (let cycle = 0; cycle < 20; cycle += 1) {
+      resetMockDemoState();
+      scenario.steps.forEach((step, index) =>
+        applySimulationStep(scenario, step, index),
+      );
+      const warnings = (await repositories.alert.getByPondId("pond-b")).filter(
+        (alert) => alert.id === "sim-alert-b-warning",
+      );
+      expect(warnings).toHaveLength(1);
+      expect(await repositories.risk.getCurrentByPondId("pond-b")).toMatchObject({
+        score: 67,
+      });
+    }
+    resetMockDemoState();
+    expect(await repositories.risk.getCurrentByPondId("pond-b")).toMatchObject({
+      score: 22,
+      level: "safe",
+    });
+    expect(
+      (await repositories.alert.getByPondId("pond-b")).filter((alert) =>
+        alert.id.startsWith("sim-alert"),
+      ),
+    ).toHaveLength(0);
+  });
 });

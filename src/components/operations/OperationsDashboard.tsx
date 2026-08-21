@@ -111,11 +111,7 @@ export function OperationsDashboard({
   user: User | null;
 }) {
   const [sort, setSort] = useState<SortKey>("risk");
-  const simulation = useSimulationStore((state) => ({
-    status: state.status,
-    scenarioId: state.scenarioId,
-    currentStep: state.currentStep,
-  }));
+  const simulationStatus = useSimulationStore((state) => state.status);
   const summary = getFarmRiskSummary(data.ponds);
   const activeAlerts = data.alerts
     .filter((alert) => alert.status !== "resolved")
@@ -143,9 +139,9 @@ export function OperationsDashboard({
       <section className="flex items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-2">
-            <p className="text-sm font-semibold text-primary">Operations Overview</p>
+            <p className="text-sm font-semibold text-primary">Ringkasan Operasional</p>
             <span className="rounded-full bg-[#dff3f0] px-2.5 py-1 text-[11px] font-semibold text-primary">
-              Demo · {simulation.status}
+              Demo · {simulationStatus}
             </span>
           </div>
           <h1 className="mt-1 text-3xl font-semibold tracking-[-.04em]">{farm?.name}</h1>
@@ -167,14 +163,14 @@ export function OperationsDashboard({
         <KpiCard icon={Activity} label="Waspada" value={summary.warning} detail="Perlu pemantauan" />
         <KpiCard icon={AlertTriangle} label="Kritis" value={summary.critical} detail="Prioritas segera" />
         <KpiCard icon={AlertTriangle} label="Peringatan Aktif" value={activeAlerts.length} detail="Belum diselesaikan" />
-        <KpiCard icon={CheckCircle2} label="Tindakan Pending" value={pending} detail={`${actions.length} tindakan tercatat`} />
+        <KpiCard icon={CheckCircle2} label="Tindakan Tertunda" value={pending} detail={`${actions.length} tindakan tercatat`} />
       </section>
 
       <section className="grid gap-4 xl:grid-cols-[1.35fr_.65fr]">
         <Card className="overflow-hidden">
           <div className="flex items-center justify-between border-b border-border px-5 py-4">
             <div>
-              <h2 className="font-semibold">Pond Operations</h2>
+              <h2 className="font-semibold">Operasional Kolam</h2>
               <p className="mt-1 text-xs text-foreground-muted">Satu tabel untuk memindai risiko, sensor, dan prioritas.</p>
             </div>
             <Link to="/app/ponds" className="inline-flex items-center gap-1 text-xs font-semibold text-primary">Semua kolam <ArrowRight size={14} /></Link>
@@ -197,7 +193,7 @@ export function OperationsDashboard({
                   <th scope="col" className="px-4 py-3 font-semibold">
                     <button className="hover:text-foreground" onClick={() => setSort("sync")}>Sinkron{sort === "sync" ? " ↓" : ""}</button>
                   </th>
-                  <th scope="col" className="px-4 py-3 font-semibold">Pending Actions</th>
+                  <th scope="col" className="px-4 py-3 font-semibold">Tindakan Tertunda</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -243,8 +239,8 @@ export function OperationsDashboard({
 
       <section className="grid gap-4 xl:grid-cols-[1.35fr_.65fr]">
         <Card className="p-5">
-          <div className="flex items-start justify-between"><div><h2 className="font-semibold">Farm Risk Trend</h2><p className="mt-1 text-xs text-foreground-muted">Perbandingan indikator risiko 12 titik terbaru. Kolam B dan C disorot.</p></div><span className="text-xs text-foreground-muted">Skor 0–100</span></div>
-          <div className="mt-4 h-64" role="img" aria-label="Grafik tren risiko seluruh kolam">
+          <div className="flex items-start justify-between"><div><h2 className="font-semibold">Tren Risiko Tambak</h2><p className="mt-1 text-xs text-foreground-muted">Perbandingan indikator risiko 12 titik terbaru. Kolam B dan C disorot.</p></div><span className="text-xs text-foreground-muted">Skor 0–100</span></div>
+          <div className="mt-4 h-64" role="img" aria-label="Grafik tren Risk Score seluruh kolam dalam 12 titik terbaru">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trend} margin={{ left: -20, right: 10 }}>
                 <CartesianGrid stroke="#e6efed" strokeDasharray="3 3" vertical={false} />
@@ -257,16 +253,17 @@ export function OperationsDashboard({
               </LineChart>
             </ResponsiveContainer>
           </div>
+          <p className="sr-only">Grafik membandingkan perubahan Risk Score Kolam A, B, C, dan D; tabel operasional di atas menyediakan nilai terbaru setiap kolam.</p>
         </Card>
         <div className="grid gap-4">
           <Card className="p-5">
-            <h2 className="font-semibold">Risk Distribution</h2>
+            <h2 className="font-semibold">Distribusi Risiko</h2>
             <div className="mt-4 grid grid-cols-3 gap-2 text-center">
               {[{label:"Aman",value:summary.safe,color:"bg-[var(--risk-safe-bg)] text-risk-safe"},{label:"Waspada",value:summary.warning,color:"bg-[var(--risk-warning-bg)] text-risk-warning"},{label:"Kritis",value:summary.critical,color:"bg-[var(--risk-critical-bg)] text-risk-critical"}].map((item) => <div key={item.label} className={`rounded-xl p-3 ${item.color}`}><p className="text-xl font-semibold">{Math.round((item.value / Math.max(1, summary.total)) * 100)}%</p><p className="mt-1 text-[11px] font-medium">{item.label} · {item.value}</p></div>)}
             </div>
           </Card>
           <Card className="p-5">
-            <div className="flex items-center justify-between"><h2 className="font-semibold">Device Health</h2><Link to="/app/devices" className="text-xs font-semibold text-primary">Kelola</Link></div>
+            <div className="flex items-center justify-between"><h2 className="font-semibold">Kesehatan Perangkat</h2><Link to="/app/devices" className="text-xs font-semibold text-primary">Kelola</Link></div>
             <p className="mt-3 text-2xl font-semibold">{healthyDevices}<span className="text-sm text-foreground-muted">/{data.ponds.length} sehat</span></p>
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-muted"><div className="h-full rounded-full bg-primary" style={{ width: `${(healthyDevices / data.ponds.length) * 100}%` }} /></div>
           </Card>
@@ -285,7 +282,7 @@ export function OperationsDashboard({
           </div>
         </Card>
         <Card className="p-5">
-          <div className="flex items-center justify-between"><h2 className="font-semibold">Recent Actions</h2><Link to="/app/reports" className="text-xs font-semibold text-primary">Buka laporan</Link></div>
+          <div className="flex items-center justify-between"><h2 className="font-semibold">Tindakan Terbaru</h2><Link to="/app/reports" className="text-xs font-semibold text-primary">Buka laporan</Link></div>
           <div className="mt-3 divide-y divide-border">
             {actions.slice(0, 5).map((action) => <div key={action.id} className="flex items-start gap-3 py-3"><Clock3 size={16} className="mt-0.5 text-primary" /><div><p className="text-sm font-semibold">{action.pond.name} · {action.actionTitle}</p><p className="mt-1 text-xs text-foreground-muted">{formatWibTime(action.performedAt)} · {action.syncStatus}</p></div></div>)}
           </div>

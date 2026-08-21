@@ -235,7 +235,7 @@ export function PondDetailPage() {
           </div>
         </Card>
         <Card className="p-5 sm:p-6">
-          <SectionHeader eyebrow="Device health" title="Perangkat Sensor" />
+          <SectionHeader eyebrow="Kesehatan perangkat" title="Perangkat Sensor" />
           <DeviceStatus
             device={data.device}
             referenceTimestamp={data.reading.timestamp}

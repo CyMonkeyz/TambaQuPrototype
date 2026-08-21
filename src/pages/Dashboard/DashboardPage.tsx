@@ -37,10 +37,15 @@ import {
 import { useAppStore } from "../../store/app-store";
 import { formatWibTime, getSensorMeta } from "../../utils/formatters";
 import { DEFAULT_DEMO_POND_ID } from "../../constants/demo";
-import { OperationsDashboard } from "../../components/operations/OperationsDashboard";
+import { loadWithRecovery } from "../../utils/lazyWithRecovery";
 
 const WaterQualityChart = lazy(
   () => import("../../components/domain/WaterQualityChart"),
+);
+const OperationsDashboard = lazy(() =>
+  loadWithRecovery(() => import("../../components/operations/OperationsDashboard")).then((module) => ({
+    default: module.OperationsDashboard,
+  })),
 );
 
 export function DashboardPage() {
@@ -112,7 +117,9 @@ export function DashboardPage() {
   return (
     <>
       <div className="hidden lg:block">
-        <OperationsDashboard data={data} farm={farm} user={user} />
+        <Suspense fallback={<LoadingSkeleton rows={5} label="Memuat ringkasan operasi" />}>
+          <OperationsDashboard data={data} farm={farm} user={user} />
+        </Suspense>
       </div>
       <div className="space-y-6 lg:hidden">
       <PageHeader
@@ -308,7 +315,7 @@ export function DashboardPage() {
           )}
           <div className="mt-4 flex items-start gap-2 rounded-xl border border-border p-3 text-xs leading-5 text-foreground-muted">
             <BrainCircuit className="mt-0.5 shrink-0" size={15} />
-            Semua status menggunakan fixture synthetic yang tetap pada setiap
+            Semua status menggunakan data sintetis yang tetap pada setiap
             refresh.
           </div>
         </Card>

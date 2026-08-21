@@ -1,5 +1,6 @@
 import { MapPin, Presentation } from "lucide-react";
-import { Link, Outlet } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { useAppStore } from "../../store/app-store";
 import { useSimulationStore } from "../../store/simulation-store";
 import { AppLogo } from "../common/AppLogo";
@@ -15,6 +16,11 @@ export function AppShell() {
   const farm = useAppStore((state) => state.activeFarm);
   const presentationMode = useSimulationStore((state) => state.presentationMode);
   const togglePresentationMode = useSimulationStore((state) => state.togglePresentationMode);
+  const location = useLocation();
+  const mainRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    mainRef.current?.focus();
+  }, [location.pathname]);
   if (presentationMode) {
     return (
       <div className="min-h-screen">
@@ -22,14 +28,14 @@ export function AppShell() {
           <AppLogo />
           <nav className="flex items-center gap-3 text-xs font-semibold">
             <Link className="text-primary" to="/app/dashboard">Dashboard</Link>
-            <Link className="hidden text-primary sm:inline" to="/app/demo-control">Demo Control</Link>
+            <Link className="hidden text-primary sm:inline" to="/app/demo-control">Kontrol Demo</Link>
             <Button className="min-h-9 px-3" variant="secondary" leadingIcon={<Presentation size={15} />} onClick={togglePresentationMode}>Keluar</Button>
             <ConnectivityIndicator />
           </nav>
         </header>
         <DemoStatusBar />
         <OfflineBanner />
-        <main className="mx-auto max-w-[1800px] p-4 lg:p-7"><Outlet /></main>
+        <main ref={mainRef} tabIndex={-1} className="mx-auto max-w-[1800px] p-4 outline-none lg:p-7"><Outlet /></main>
       </div>
     );
   }
@@ -51,7 +57,7 @@ export function AppShell() {
         </header>
         <DemoStatusBar />
         <OfflineBanner />
-        <main className="mx-auto max-w-[1600px] p-5 lg:p-8">
+        <main ref={mainRef} tabIndex={-1} className="mx-auto max-w-[1600px] p-5 outline-none lg:p-8">
           <Outlet />
         </main>
       </div>

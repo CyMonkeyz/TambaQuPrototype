@@ -34,7 +34,7 @@ export function SettingsPage() {
     },
     {
       icon: BellRing,
-      title: "Preferensi alert",
+      title: "Preferensi peringatan",
       description:
         "Kanal dan ambang notifikasi akan dikonfigurasi pada fase mendatang.",
     },
@@ -69,7 +69,7 @@ export function SettingsPage() {
               <div>
                 <h2 className="font-semibold">Reset Data Demo</h2>
                 <p className="mt-1 text-sm leading-6 text-foreground-muted">
-                  Kembalikan status alert, rekomendasi, dan riwayat tindakan ke
+                  Kembalikan status peringatan, rekomendasi, dan riwayat tindakan ke
                   kondisi awal presentasi.
                 </p>
               </div>
@@ -91,7 +91,7 @@ export function SettingsPage() {
           <Card className="p-5 shadow-none">
             <div className="flex items-start gap-4">
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-surface-muted text-primary"><HardDrive size={19} /></span>
-              <div className="min-w-0 flex-1"><h2 className="font-semibold">Penyimpanan Offline</h2><p className="mt-1 text-sm leading-6 text-foreground-muted">{connectivity.storageAvailable ? "IndexedDB aktif untuk snapshot tambak, riwayat sensor, dan antrean sync." : "Penyimpanan offline tidak tersedia pada browser ini."}</p><Button className="mt-3" variant="secondary" disabled={!connectivity.storageAvailable} onClick={() => setClearOpen(true)}>Hapus Data Offline</Button></div>
+              <div className="min-w-0 flex-1"><h2 className="font-semibold">Penyimpanan Offline</h2><p className="mt-1 text-sm leading-6 text-foreground-muted">{connectivity.storageAvailable ? "Penyimpanan lokal aktif untuk snapshot tambak, riwayat sensor, dan antrean sinkronisasi." : "Penyimpanan offline tidak tersedia pada browser ini."}</p><Button className="mt-3" variant="secondary" disabled={!connectivity.storageAvailable} onClick={() => setClearOpen(true)}>Hapus Data Offline</Button></div>
             </div>
           </Card>
           <Card className="p-5 shadow-none">
@@ -103,7 +103,7 @@ export function SettingsPage() {
                 <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-surface-muted text-primary"><PlayCircle size={19} /></span>
                 <div><h2 className="font-semibold">Mode Demo</h2><p className="mt-1 text-sm leading-6 text-foreground-muted">Pilih skenario, atur kecepatan, dan aktifkan presentation mode.</p></div>
               </div>
-              <Link className="inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-4 text-sm font-semibold text-white" to="/app/demo-control">Buka Demo Control</Link>
+              <Link className="inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-4 text-sm font-semibold text-white" to="/app/demo-control">Buka Kontrol Demo</Link>
             </div>
           </Card>
         </div>
@@ -118,7 +118,7 @@ export function SettingsPage() {
             <StatusBadge status="active" />
           </div>
           <p className="mt-4 rounded-xl bg-surface-muted p-3 text-xs leading-5 text-foreground-muted">
-            Mode demo menggunakan data synthetic dan penyimpanan sesi lokal pada
+            Mode demo menggunakan data sintetis dan penyimpanan sesi lokal pada
             perangkat ini.
           </p>
           <dl className="mt-4 space-y-3 border-t border-border pt-4 text-sm"><div className="flex justify-between gap-3"><dt className="text-foreground-muted">Aplikasi</dt><dd className="font-semibold">{install.installed ? "Terpasang" : "Browser"}</dd></div><div className="flex justify-between gap-3"><dt className="text-foreground-muted">Koneksi app</dt><dd className="font-semibold capitalize">{connectivityMode}</dd></div><div className="flex justify-between gap-3"><dt className="text-foreground-muted">Offline storage</dt><dd className="font-semibold">{connectivity.storageAvailable ? "Aktif" : "Tidak tersedia"}</dd></div><div className="flex justify-between gap-3"><dt className="text-foreground-muted">Versi</dt><dd className="font-semibold">{__APP_VERSION__}</dd></div></dl>

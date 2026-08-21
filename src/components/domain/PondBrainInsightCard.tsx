@@ -59,11 +59,11 @@ export function PondBrainInsightCard({
       )}
       <div className="mt-4 rounded-xl bg-surface-muted p-4">
         <div className="flex items-center justify-between gap-4 text-sm">
-          <span className="font-semibold">Data Confidence</span>
+          <span className="font-semibold">Kepercayaan Data</span>
           <strong>{cached ? "Terbatas" : `${confidence}%`}</strong>
         </div>
         <p className="mt-1 text-xs leading-5 text-foreground-muted">
-          Berdasarkan kelengkapan data, freshness sensor, dan jumlah faktor yang
+          Berdasarkan kelengkapan data, kebaruan sensor, dan jumlah faktor yang
           tersedia—bukan probabilitas diagnosis.
         </p>
       </div>

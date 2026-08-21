@@ -41,7 +41,7 @@ export function RiskSummary({
           {risk.summary}
         </p>
         <p className="mt-2 text-xs text-foreground-muted">
-          Skor synthetic deterministik · bukan diagnosis otomatis
+          Skor sintetis deterministik · bukan diagnosis otomatis
         </p>
       </div>
     </div>

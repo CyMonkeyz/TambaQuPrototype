@@ -1,4 +1,4 @@
-# TambaQu Architecture — Phases 1–5
+# TambaQu Architecture — Final Competition MVP
 
 ## Stack
 
@@ -102,12 +102,12 @@ Prototype: Simulator → SensorReading Repository
 Production: IoT Gateway → Backend → SensorReading API → SensorReading Repository
 ```
 
-## Phase 5 PWA architecture
+## PWA architecture
 
 Cache Storage and IndexedDB have separate responsibilities:
 
 - Workbox precaches the versioned HTML, JavaScript, CSS, local icons, and critical assets. SPA navigation falls back to the precached `index.html` after a successful online visit.
-- `TambaQuDB` (Dexie schema version 1) stores farms, ponds, sensor readings, risk assessments, alerts, recommendations, actions, devices, sync metadata, and the mutation outbox.
+- `TambaQuDB` (Dexie schema version 2) stores farms, ponds, sensor readings, risk assessments, alerts, recommendations, actions, devices, sync metadata, and the mutation outbox.
 - Sensor history is bounded to 720 records per pond in the prototype; it is not an unlimited event store.
 - The app renders from the local repository boundary and performs remote/demo refresh without blocking on outbox completion.
 
@@ -144,11 +144,16 @@ Application connectivity and sensor-device connectivity are independent. `naviga
 ## Startup and failure fallback
 
 ```text
-Launch → open IndexedDB → seed once if empty → render cached domain data
+Launch → render stable route shell → open and validate IndexedDB
+       → migrate/reseed incompatible cache → render cached domain data
        → observe connectivity → refresh demo remote → process outbox
 ```
 
-Sync never blocks initial rendering. If IndexedDB is unavailable (including restrictive private-browsing environments), the app marks offline storage unavailable and continues through the in-memory/remote adapter while online. IndexedDB is not secure secret storage; no credentials, passwords, or API keys are stored there.
+Sync never blocks the application shell. If IndexedDB is unavailable (including restrictive private-browsing environments), the app marks offline storage unavailable and continues through the in-memory/remote adapter while online. The v2 migration clears incompatible cached snapshots but preserves pending actions/outbox records. IndexedDB is not secure secret storage; no credentials, passwords, or API keys are stored there.
+
+## Final runtime and bundle boundaries
+
+Secondary routes and chart-heavy operations surfaces use lazy imports with a shared stale-chunk recovery policy. Login, the shell, and Dashboard routing remain eager. A global error boundary keeps unexpected render failures recoverable, while offline initialization reports through connectivity state instead of crashing the React tree. Zustand subscriptions use primitive/granular selectors unless a control surface intentionally consumes the complete stable store object.
 
 ## Why these choices
 

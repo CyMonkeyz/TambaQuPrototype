@@ -22,13 +22,17 @@ function refreshLocalFromRemote() {
 export async function initializeOfflineRuntime() {
   if (initialized) return;
   initialized = true;
-  const available = await initializeOfflineDatabase();
-  if (!available) return;
-  await refreshSyncCounts();
-  unsubscribeRepository = subscribeDemoRepository(refreshLocalFromRemote);
-  if (isDataConnectionAvailable()) {
-    await syncPendingMutations();
-    refreshLocalFromRemote();
+  try {
+    const available = await initializeOfflineDatabase();
+    if (!available) return;
+    await refreshSyncCounts();
+    unsubscribeRepository = subscribeDemoRepository(refreshLocalFromRemote);
+    if (isDataConnectionAvailable()) {
+      await syncPendingMutations();
+      refreshLocalFromRemote();
+    }
+  } catch {
+    useConnectivityStore.getState().setHydration("error", false);
   }
 }
 

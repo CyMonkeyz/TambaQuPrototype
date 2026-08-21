@@ -102,7 +102,7 @@ export function ReportsPage() {
         <label className="text-xs font-semibold text-foreground-muted">Kolam<select className="ml-2 min-h-10 rounded-xl border border-border bg-white px-3 text-sm text-foreground" value={pondId} onChange={(event) => setPondId(event.target.value)}><option value="all">Semua kolam</option>{data?.ponds.map((pond) => <option key={pond.id} value={pond.id}>{pond.name}</option>)}</select></label>
         <label className="text-xs font-semibold text-foreground-muted">Periode<select className="ml-2 min-h-10 rounded-xl border border-border bg-white px-3 text-sm text-foreground" value={period} onChange={(event) => setPeriod(event.target.value as ReportPeriod)}><option value="24h">24 jam</option><option value="7d">7 hari</option><option value="30d">30 hari</option><option value="cycle">Siklus tersedia</option></select></label>
       </section>
-      <p className="mt-4 text-xs text-foreground-muted">{farm?.name} · Data synthetic untuk demonstrasi produk · Bukan laporan laboratorium.</p>
+      <p className="mt-4 text-xs text-foreground-muted">{farm?.name} · Data sintetis untuk demonstrasi produk · Bukan laporan laboratorium.</p>
       {report?.readings.at(-1) && <div className="mt-4"><OfflineDataNotice timestamp={report.readings.at(-1)?.timestamp} /></div>}
       <div className="mt-6">
         {isLoading ? <LoadingSkeleton rows={5} /> : error || !data || !report ? <ErrorState onRetry={retry} /> : (
@@ -110,7 +110,7 @@ export function ReportsPage() {
             <section className="grid grid-cols-2 gap-3 lg:grid-cols-6" aria-label="KPI laporan">
               <ReportMetric icon={Gauge} label="Rata-rata Risiko" value={report.kpis.averageRisk} detail="Skor lintas kolam" />
               <ReportMetric icon={Activity} label="Risiko Tertinggi" value={report.kpis.highestRisk} detail="Skor saat ini" />
-              <ReportMetric icon={AlertTriangle} label="Alert Aktif" value={report.kpis.activeAlerts} detail="Belum diselesaikan" />
+              <ReportMetric icon={AlertTriangle} label="Peringatan Aktif" value={report.kpis.activeAlerts} detail="Belum diselesaikan" />
               <ReportMetric icon={CheckCircle2} label="Tindakan" value={report.kpis.actionsTaken} detail="Tercatat pada demo" />
               <ReportMetric icon={RadioTower} label="Uptime" value={`${report.kpis.uptime}%`} detail="Estimasi fixture" />
               <ReportMetric icon={CheckCircle2} label="Kelengkapan" value={`${report.kpis.completeness}%`} detail="Estimasi data tersedia" />

@@ -14,6 +14,8 @@ npm run preview
 
 The install action appears in Settings only when `beforeinstallprompt` is available. Installed/standalone state hides the CTA. iOS Safari receives Add to Home Screen instructions. App updates use an explicit prompt; no update forces a surprise reload or interrupts an active simulation/presentation.
 
+Normal Vite development explicitly disables service-worker generation/registration. A development-only startup safeguard unregisters a stale worker for the same local origin, removes only TambaQu/Workbox caches, and performs at most one controlled reload when the old worker was already controlling the tab. Production registration and caches are never removed by this safeguard.
+
 ## Cache strategy
 
 - Workbox precache: `index.html`, hashed JavaScript/CSS, local app icons, and critical local assets.
@@ -26,7 +28,7 @@ Future monitoring GET endpoints should use Network First with a short timeout an
 
 ## IndexedDB
 
-Dexie database `TambaQuDB`, schema version 1:
+Dexie database `TambaQuDB`, schema version 2:
 
 - `farms`
 - `ponds`
@@ -40,6 +42,8 @@ Dexie database `TambaQuDB`, schema version 1:
 - `syncMeta`
 
 Sensor retention is bounded to 720 records per pond for this prototype. The database is seeded once from the mock/simulation remote adapter and only reseeded after an explicit reset or a later online refresh. IndexedDB stores no passwords, API secrets, or production auth tokens.
+
+The v1-to-v2 migration invalidates cached domain snapshots whose runtime shape changed while preserving `actionLogs` and `outbox`. Startup also validates required farm, pond, reading, risk-contributor, and device fields. An incompatible snapshot is reseeded automatically; users are not asked to clear IndexedDB manually.
 
 ## Offline behavior and outbox
 
@@ -75,5 +79,6 @@ Production still requires authentication, authorization, encryption in transit, 
 5. Confirm the app shell and cached domain data load.
 6. Restore online and verify pending outbox items sync.
 7. For installation, use a browser that exposes its install prompt; standalone launch validation remains browser/platform dependent.
+8. Deploy a new version, keep the existing tab open, and confirm the update prompt appears without an automatic reload. If an old lazy chunk is no longer available, confirm the recovery screen offers **Muat Versi Terbaru**.
 
 Known limitation: an app never visited online cannot have its assets/data cached. The current remote adapter is synthetic and local; real network reachability and server conflict handling remain future work.

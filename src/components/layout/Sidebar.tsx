@@ -1,5 +1,5 @@
 import { ChevronsLeft, ChevronsRight, LogOut } from "lucide-react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { desktopNavigation } from "../../constants/navigation";
 import { useAppStore } from "../../store/app-store";
 import { cn } from "../../utils/cn";
@@ -12,6 +12,7 @@ export function Sidebar() {
   const toggleSidebar = useAppStore((state) => state.toggleSidebar);
   const leaveSession = useAppStore((state) => state.leaveSession);
   const navigate = useNavigate();
+  const location = useLocation();
   const logout = () => {
     leaveSession();
     navigate("/login");
@@ -46,25 +47,30 @@ export function Sidebar() {
         </Tooltip>
       )}
       <nav className="mt-8 space-y-1" aria-label="Navigasi utama">
-        {desktopNavigation.map((item) => (
-          <Tooltip key={item.href} label={collapsed ? item.label : ""}>
+        {desktopNavigation.map((item) => {
+          const active =
+            location.pathname === item.href ||
+            location.pathname.startsWith(`${item.href}/`);
+          const link = (
             <NavLink
+              key={item.href}
               to={item.href}
-              className={({ isActive }) =>
-                cn(
-                  "flex min-h-11 items-center rounded-xl text-sm font-medium transition-colors",
-                  collapsed ? "justify-center px-2" : "gap-3 px-3",
-                  isActive
-                    ? "bg-[#dff3f0] font-semibold text-primary"
-                    : "text-foreground-muted hover:bg-surface-muted hover:text-foreground",
-                )
-              }
+              className={cn(
+                "flex min-h-11 items-center rounded-xl text-sm font-medium transition-colors",
+                collapsed ? "justify-center px-2" : "gap-3 px-3",
+                active
+                  ? "bg-[#dff3f0] font-semibold text-primary"
+                  : "text-foreground-muted hover:bg-surface-muted hover:text-foreground",
+              )}
             >
               <item.icon size={19} aria-hidden="true" />
               {!collapsed && item.label}
             </NavLink>
-          </Tooltip>
-        ))}
+          );
+          return collapsed ? (
+            <Tooltip key={item.href} label={item.label}>{link}</Tooltip>
+          ) : link;
+        })}
       </nav>
       <div className="mt-auto">
         <div

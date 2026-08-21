@@ -73,7 +73,7 @@ export function DevicesPage() {
     <>
       <PageHeader
         eyebrow="Sensor network"
-        title="Device Management"
+        title="Manajemen Perangkat"
         description="Pantau kesehatan koneksi, daya, sinyal, firmware, dan jadwal kalibrasi seluruh perangkat."
       />
       <section className="mt-7 grid grid-cols-2 gap-3 lg:grid-cols-4" aria-label="Ringkasan perangkat">
