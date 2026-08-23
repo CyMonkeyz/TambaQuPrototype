@@ -142,7 +142,7 @@ export function PondDetailPage() {
           <RiskSummary
             risk={data.risk}
             scoreChange={scoreChange}
-            title="Risk Score"
+            title="Skor Risiko"
           />
         </Card>
         <Card className="p-5 sm:p-6">
@@ -195,10 +195,10 @@ export function PondDetailPage() {
               </span>
               <div>
                 <p className="text-sm font-semibold text-primary">
-                  PondBrain Insight
+                  Ringkasan PondBrain
                 </p>
                 <p className="mt-1 font-semibold">
-                  Risk {data.risk.score} ·{" "}
+                  Skor {data.risk.score} ·{" "}
                   {data.risk.level === "critical"
                     ? "Kritis"
                     : data.risk.level === "warning"
@@ -245,9 +245,9 @@ export function PondDetailPage() {
       </div>
       <Card className="p-5 sm:p-6">
         <SectionHeader
-          eyebrow="Situational awareness"
+          eyebrow="Perlu diperhatikan"
           title="Aktivitas Terbaru"
-          description="Preview peringatan terkait kolam ini."
+          description="Peringatan dan catatan terbaru untuk kolam ini."
         />
         {latestAction && (
           <div className="mb-4 rounded-xl bg-[var(--risk-safe-bg)] p-4">

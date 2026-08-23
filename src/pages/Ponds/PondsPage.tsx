@@ -60,7 +60,7 @@ export function PondsPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Monitoring multi-kolam"
+        eyebrow="Pantau semua kolam"
         title="Kondisi Kolam"
         description={`Bandingkan tingkat risiko, kualitas air, dan kesehatan perangkat di ${farm?.name}.`}
       />

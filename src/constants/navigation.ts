@@ -9,13 +9,13 @@ import {
 } from "lucide-react";
 
 export const desktopNavigation = [
-  { label: "Dashboard", href: "/app/dashboard", icon: LayoutDashboard },
-  { label: "Ponds", href: "/app/ponds", icon: Droplets },
+  { label: "Beranda", href: "/app/dashboard", icon: LayoutDashboard },
+  { label: "Kolam", href: "/app/ponds", icon: Droplets },
   { label: "PondBrain", href: "/app/pondbrain", icon: BrainCircuit },
-  { label: "Alerts", href: "/app/alerts", icon: Bell },
-  { label: "Reports", href: "/app/reports", icon: FileChartColumn },
-  { label: "Devices", href: "/app/devices", icon: RadioTower },
-  { label: "Settings", href: "/app/settings", icon: Settings },
+  { label: "Peringatan", href: "/app/alerts", icon: Bell },
+  { label: "Laporan", href: "/app/reports", icon: FileChartColumn },
+  { label: "Perangkat", href: "/app/devices", icon: RadioTower },
+  { label: "Pengaturan", href: "/app/settings", icon: Settings },
 ];
 
 export const mobilePrimaryNavigation = desktopNavigation.slice(0, 4);

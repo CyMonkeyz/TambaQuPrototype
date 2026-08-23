@@ -19,7 +19,7 @@ export function LoginPage() {
 
   const submitLogin = (event: FormEvent) => {
     event.preventDefault();
-    toast.info("Autentikasi nyata belum tersedia pada MVP. Gunakan Mode Demo.");
+    toast.info("Akun tim belum aktif di versi ini. Silakan gunakan Mode Demo.");
   };
 
   const startDemo = () => {
@@ -33,49 +33,76 @@ export function LoginPage() {
       <section className="relative hidden overflow-hidden bg-[#0b4f50] p-14 text-white lg:flex lg:flex-col lg:justify-between">
         <div className="absolute -right-24 top-28 size-72 rounded-full border border-white/10" />
         <div className="absolute -right-6 top-44 size-72 rounded-full border border-white/10" />
-        <AppLogo inverted />
+        <div className="relative w-24 rounded-3xl border border-white/20 bg-white p-3 shadow-xl shadow-black/10">
+          <img
+            src="/brand/tambaqu-lockup.png"
+            alt="TambaQu"
+            width={720}
+            height={1000}
+            className="h-auto w-full object-contain"
+          />
+        </div>
         <div className="relative max-w-xl">
           <span className="mb-5 inline-flex rounded-full bg-white/10 px-3 py-1.5 text-sm font-semibold">
-            Aquaculture intelligence platform
+            Ruang kerja operasional tambak
           </span>
           <h1 className="text-5xl font-semibold leading-[1.08] tracking-[-.045em]">
-            Keputusan tambak yang lebih cepat, sebelum risiko membesar.
+            Lihat yang berubah. Tentukan apa yang perlu dilakukan.
           </h1>
           <p className="mt-5 max-w-lg text-lg leading-8 text-white/72">
-            Pantau kualitas air, pahami tingkat risiko, dan tentukan tindakan
-            berikutnya dalam satu ruang kerja.
+            Data kualitas air, peringatan, dan catatan tindakan disatukan agar
+            tim tambak tidak perlu menebak langkah berikutnya.
           </p>
           <div className="mt-10 grid max-w-lg grid-cols-3 gap-3 text-sm">
             <div className="rounded-xl bg-white/[.08] p-4">
-              <strong className="block text-xl">24/7</strong>
-              <span className="mt-1 block text-white/65">Monitoring</span>
+              <strong className="block text-xl">24 jam</strong>
+              <span className="mt-1 block text-white/70">Pemantauan</span>
             </div>
             <div className="rounded-xl bg-white/[.08] p-4">
-              <strong className="block text-xl">4</strong>
-              <span className="mt-1 block text-white/65">Kolam demo</span>
+              <strong className="block text-xl">4 kolam</strong>
+              <span className="mt-1 block text-white/70">Data contoh</span>
             </div>
             <div className="rounded-xl bg-white/[.08] p-4">
-              <strong className="block text-xl">1 ruang</strong>
-              <span className="mt-1 block text-white/65">Kerja terpadu</span>
+              <strong className="block text-xl">1 alur</strong>
+              <span className="mt-1 block text-white/70">Pantau–tindak</span>
             </div>
           </div>
         </div>
         <p className="relative flex items-center gap-2 text-sm text-white/60">
           <ShieldCheck size={17} />
-          Decision-support untuk budidaya udang vaname
+          Panduan keputusan untuk budidaya udang vaname
         </p>
       </section>
-      <section className="flex items-center justify-center px-5 py-10">
+      <section className="flex items-start justify-center px-5 py-8 lg:items-center lg:py-10">
         <div className="w-full max-w-md">
           <div className="mb-10 lg:hidden">
             <AppLogo />
           </div>
-          <p className="text-sm font-semibold text-primary">Selamat datang</p>
+          <p className="text-sm font-semibold text-primary">Coba TambaQu</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-[-.04em]">
-            Masuk ke TambaQu
+            Buka ruang kerja tambak
           </h1>
           <p className="mt-3 leading-7 text-foreground-muted">
-            Monitoring tambak yang jelas, preventif, dan mudah ditindaklanjuti.
+            Masuk ke mode demo untuk mencoba pemantauan kolam dan alur tindak
+            lanjut dengan data contoh yang konsisten.
+          </p>
+          <Button className="mt-8 w-full" onClick={startDemo}>
+            Masuk ke Mode Demo <ArrowRight size={17} />
+          </Button>
+          <div className="mt-5 rounded-xl border border-border bg-surface-muted p-4 text-sm leading-6 text-foreground-muted">
+            <strong className="text-foreground">Tentang data demo</strong>
+            <span className="mt-1 block">
+              Angka dan kejadian dibuat untuk memperagakan alur produk, bukan
+              hasil pengamatan lapangan.
+            </span>
+          </div>
+          <div className="my-6 flex items-center gap-3 text-xs font-medium text-foreground-muted">
+            <span className="h-px flex-1 bg-border" />
+            Akses tim tambak
+            <span className="h-px flex-1 bg-border" />
+          </div>
+          <p className="mb-5 text-sm leading-6 text-foreground-muted">
+            Akun operasional belum dihubungkan pada versi demo ini.
           </p>
           <form className="mt-8 space-y-5" onSubmit={submitLogin}>
             <label className="block text-sm font-semibold" htmlFor="email">
@@ -87,9 +114,10 @@ export function LoginPage() {
               type="email"
               autoComplete="email"
               placeholder="nama@email.com"
+              required
             />
             <label className="block text-sm font-semibold" htmlFor="password">
-              Password
+              Kata sandi
             </label>
             <div className="relative -mt-3">
               <input
@@ -97,36 +125,26 @@ export function LoginPage() {
                 className="h-12 w-full rounded-xl border border-border bg-white px-4 pr-12 outline-none transition-colors focus:border-primary"
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
-                placeholder="Masukkan password"
+                placeholder="Masukkan kata sandi"
+                required
               />
               <button
                 type="button"
                 className="absolute right-1 top-1 grid size-10 place-items-center rounded-lg text-foreground-muted hover:bg-surface-muted"
                 onClick={() => setShowPassword((value) => !value)}
                 aria-label={
-                  showPassword ? "Sembunyikan password" : "Tampilkan password"
+                  showPassword
+                    ? "Sembunyikan kata sandi"
+                    : "Tampilkan kata sandi"
                 }
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
             <Button className="w-full" type="submit">
-              Login
+              Masuk dengan Akun
             </Button>
           </form>
-          <div className="my-5 flex items-center gap-3 text-xs text-foreground-muted">
-            <span className="h-px flex-1 bg-border" />
-            atau
-            <span className="h-px flex-1 bg-border" />
-          </div>
-          <Button className="w-full" variant="secondary" onClick={startDemo}>
-            Masuk sebagai Demo <ArrowRight size={17} />
-          </Button>
-          <div className="mt-6 rounded-xl bg-surface-muted p-4 text-sm leading-6 text-foreground-muted">
-            <strong className="text-foreground">Mode Demo</strong> · Data yang
-            ditampilkan merupakan simulasi untuk kebutuhan demonstrasi, bukan
-            hasil validasi lapangan.
-          </div>
         </div>
       </section>
     </main>

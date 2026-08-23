@@ -42,8 +42,10 @@ export default defineConfig({
       injectRegister: null,
       devOptions: { enabled: false },
       includeAssets: [
-        "favicon.ico",
-        "tambaqu-logo.svg",
+        "pwa-64x64.png",
+        "brand/tambaqu-mark.png",
+        "brand/tambaqu-wordmark.png",
+        "brand/tambaqu-lockup.png",
         "apple-touch-icon-180x180.png",
       ],
       manifest: {
@@ -51,7 +53,7 @@ export default defineConfig({
         name: "TambaQu",
         short_name: "TambaQu",
         description:
-          "Platform monitoring dan dukungan keputusan budidaya udang vaname.",
+          "Pemantauan kualitas air dan pencatatan tindak lanjut budidaya udang vaname.",
         start_url: "/app/dashboard",
         scope: "/",
         display: "standalone",

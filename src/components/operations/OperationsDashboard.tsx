@@ -33,10 +33,29 @@ import { StatusBadge } from "../ui/StatusBadge";
 type SortKey = "risk" | "name" | "sync" | "do";
 
 const lineColors: Record<string, string> = {
-  "pond-a": "#90aaa7",
+  "pond-a": "#416d78",
   "pond-b": "#087f74",
   "pond-c": "#b23a3a",
-  "pond-d": "#bdc9c7",
+  "pond-d": "#6b6078",
+};
+
+const simulationStatusLabels: Record<string, string> = {
+  idle: "siap",
+  running: "berjalan",
+  paused: "dijeda",
+  completed: "selesai",
+};
+
+const alertStatusLabels: Record<string, string> = {
+  new: "baru",
+  acknowledged: "sudah ditinjau",
+  resolved: "selesai",
+};
+
+const syncStatusLabels: Record<string, string> = {
+  synced: "tersinkron",
+  pending: "menunggu sinkronisasi",
+  failed: "gagal tersinkron",
 };
 
 function KpiCard({
@@ -141,7 +160,7 @@ export function OperationsDashboard({
           <div className="flex items-center gap-2">
             <p className="text-sm font-semibold text-primary">Ringkasan Operasional</p>
             <span className="rounded-full bg-[#dff3f0] px-2.5 py-1 text-[11px] font-semibold text-primary">
-              Demo · {simulationStatus}
+              Demo · {simulationStatusLabels[simulationStatus] ?? simulationStatus}
             </span>
           </div>
           <h1 className="mt-1 text-3xl font-semibold tracking-[-.04em]">{farm?.name}</h1>
@@ -228,7 +247,7 @@ export function OperationsDashboard({
               return (
               <div key={item.pond.id} className="rounded-xl border border-border p-3">
                 <div className="flex items-center justify-between gap-3"><div className="flex items-center gap-2"><span className="grid size-6 place-items-center rounded-lg bg-surface-muted text-xs font-semibold">{index + 1}</span><p className="text-sm font-semibold">{item.pond.name}</p></div><RiskBadge level={item.risk.level} /></div>
-                <p className="mt-2 text-xs font-semibold">{recommendations[0]?.title ?? "Monitoring rutin"}</p>
+                <p className="mt-2 text-xs font-semibold">{recommendations[0]?.title ?? "Pemantauan rutin"}</p>
                 <p className="mt-1 line-clamp-2 text-xs leading-5 text-foreground-muted">DO {item.reading.dissolvedOxygen.toFixed(1)} mg/L · Amonia {item.reading.ammonia.toFixed(2)} mg/L · {recommendations.length} tindakan prioritas</p>
                 <Link to={`/app/pondbrain?pond=${item.pond.id}`} className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-primary">Buka PondBrain <ArrowRight size={13} /></Link>
               </div>
@@ -240,7 +259,7 @@ export function OperationsDashboard({
       <section className="grid gap-4 xl:grid-cols-[1.35fr_.65fr]">
         <Card className="p-5">
           <div className="flex items-start justify-between"><div><h2 className="font-semibold">Tren Risiko Tambak</h2><p className="mt-1 text-xs text-foreground-muted">Perbandingan indikator risiko 12 titik terbaru. Kolam B dan C disorot.</p></div><span className="text-xs text-foreground-muted">Skor 0–100</span></div>
-          <div className="mt-4 h-64" role="img" aria-label="Grafik tren Risk Score seluruh kolam dalam 12 titik terbaru">
+          <div className="mt-4 h-64" role="img" aria-label="Grafik tren skor risiko seluruh kolam dalam 12 titik terbaru">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trend} margin={{ left: -20, right: 10 }}>
                 <CartesianGrid stroke="#e6efed" strokeDasharray="3 3" vertical={false} />
@@ -253,7 +272,7 @@ export function OperationsDashboard({
               </LineChart>
             </ResponsiveContainer>
           </div>
-          <p className="sr-only">Grafik membandingkan perubahan Risk Score Kolam A, B, C, dan D; tabel operasional di atas menyediakan nilai terbaru setiap kolam.</p>
+          <p className="sr-only">Grafik membandingkan perubahan skor risiko Kolam A, B, C, dan D; tabel operasional di atas menyediakan nilai terbaru setiap kolam.</p>
         </Card>
         <div className="grid gap-4">
           <Card className="p-5">
@@ -276,7 +295,7 @@ export function OperationsDashboard({
           <div className="mt-3 divide-y divide-border">
             {activeAlerts.slice(0, 5).map((alert) => {
               const pond = data.ponds.find((item) => item.pond.id === alert.pondId)?.pond;
-              return <div key={alert.id} className="flex items-start gap-3 py-3"><AlertTriangle size={16} className={alert.severity === "critical" ? "mt-0.5 text-risk-critical" : "mt-0.5 text-risk-warning"} /><div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{pond?.name} · {alert.title}</p><p className="mt-1 text-xs text-foreground-muted">{formatWibTime(alert.timestamp)} · {alert.status}</p></div></div>;
+              return <div key={alert.id} className="flex items-start gap-3 py-3"><AlertTriangle size={16} className={alert.severity === "critical" ? "mt-0.5 text-risk-critical" : "mt-0.5 text-risk-warning"} /><div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{pond?.name} · {alert.title}</p><p className="mt-1 text-xs text-foreground-muted">{formatWibTime(alert.timestamp)} · {alertStatusLabels[alert.status] ?? alert.status}</p></div></div>;
             })}
             {activeAlerts.length === 0 && <p className="py-5 text-sm text-foreground-muted">Tidak ada peringatan aktif.</p>}
           </div>
@@ -284,7 +303,7 @@ export function OperationsDashboard({
         <Card className="p-5">
           <div className="flex items-center justify-between"><h2 className="font-semibold">Tindakan Terbaru</h2><Link to="/app/reports" className="text-xs font-semibold text-primary">Buka laporan</Link></div>
           <div className="mt-3 divide-y divide-border">
-            {actions.slice(0, 5).map((action) => <div key={action.id} className="flex items-start gap-3 py-3"><Clock3 size={16} className="mt-0.5 text-primary" /><div><p className="text-sm font-semibold">{action.pond.name} · {action.actionTitle}</p><p className="mt-1 text-xs text-foreground-muted">{formatWibTime(action.performedAt)} · {action.syncStatus}</p></div></div>)}
+            {actions.slice(0, 5).map((action) => <div key={action.id} className="flex items-start gap-3 py-3"><Clock3 size={16} className="mt-0.5 text-primary" /><div><p className="text-sm font-semibold">{action.pond.name} · {action.actionTitle}</p><p className="mt-1 text-xs text-foreground-muted">{formatWibTime(action.performedAt)} · {syncStatusLabels[action.syncStatus] ?? action.syncStatus}</p></div></div>)}
           </div>
         </Card>
       </section>

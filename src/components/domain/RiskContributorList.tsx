@@ -32,7 +32,7 @@ export function RiskContributorList({
             <div
               className="mt-2 h-2 overflow-hidden rounded-full bg-surface-muted"
               role="progressbar"
-              aria-label={`${getContributorLabel(item)} berkontribusi ${item.contribution} persen terhadap Risk Score`}
+              aria-label={`${getContributorLabel(item)} menyumbang ${item.contribution} persen pada skor risiko`}
               aria-valuemin={0}
               aria-valuemax={100}
               aria-valuenow={item.contribution}
@@ -47,8 +47,8 @@ export function RiskContributorList({
             </p>
             <p className="mt-1 text-xs font-medium text-foreground-muted">
               {index === 0
-                ? "Kontribusi terbesar terhadap Risk Score saat ini."
-                : "Berkontribusi terhadap Risk Score pada analisis saat ini."}
+                ? "Faktor paling berpengaruh pada skor saat ini."
+                : "Faktor ini ikut memengaruhi skor saat ini."}
             </p>
           </article>
         ))}

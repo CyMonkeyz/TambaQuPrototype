@@ -41,7 +41,7 @@ export function RiskSummary({
           {risk.summary}
         </p>
         <p className="mt-2 text-xs text-foreground-muted">
-          Skor sintetis deterministik · bukan diagnosis otomatis
+          Skor dari aturan demo · tetap periksa kondisi kolam secara langsung
         </p>
       </div>
     </div>

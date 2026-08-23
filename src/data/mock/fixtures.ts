@@ -449,7 +449,7 @@ export const demoActions: ActionLog[] = [
     id: "action-a-routine",
     pondId: "pond-a",
     recommendationId: "rec-a-routine-history",
-    actionTitle: "Monitoring rutin parameter air",
+    actionTitle: "Pemantauan rutin parameter air",
     performedBy: demoUser.id,
     performedAt: "2026-08-19T11:32:00.000Z",
     notes: "Tidak ditemukan perubahan operasional yang perlu ditindaklanjuti.",

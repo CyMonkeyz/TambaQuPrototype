@@ -1,4 +1,3 @@
-import { Waves } from "lucide-react";
 import { cn } from "../../utils/cn";
 
 export function AppLogo({
@@ -9,29 +8,31 @@ export function AppLogo({
   inverted?: boolean;
 }) {
   return (
-    <div className="flex items-center gap-2.5" aria-label="TambaQu">
-      <span
+    <div
+      className={cn(
+        "flex w-fit items-center gap-2.5",
+        inverted && "rounded-2xl border border-white/20 bg-white px-3 py-2 shadow-sm",
+      )}
+      aria-label="TambaQu"
+    >
+      <img
+        src="/brand/tambaqu-mark.png"
+        alt=""
+        width={512}
+        height={512}
         className={cn(
-          "grid size-9 shrink-0 place-items-center rounded-xl",
-          inverted
-            ? "bg-white/12 text-white"
-            : "bg-primary text-primary-foreground",
+          "size-9 shrink-0 object-contain",
+          compact && "size-10",
         )}
-      >
-        <Waves size={21} aria-hidden="true" />
-      </span>
+      />
       {!compact && (
-        <span
-          className={cn(
-            "text-xl font-bold tracking-[-.04em]",
-            inverted && "text-white",
-          )}
-        >
-          Tamba
-          <span className={inverted ? "text-[#7ee0d5]" : "text-primary"}>
-            Qu
-          </span>
-        </span>
+        <img
+          src="/brand/tambaqu-wordmark.png"
+          alt=""
+          width={720}
+          height={155}
+          className="h-[25px] w-auto object-contain"
+        />
       )}
     </div>
   );

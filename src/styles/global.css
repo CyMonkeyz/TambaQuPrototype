@@ -10,10 +10,10 @@
   --surface: #ffffff;
   --surface-muted: #edf4f3;
   --foreground: #132b2e;
-  --foreground-muted: #607476;
-  --border: #d9e5e3;
-  --primary: #087f74;
-  --primary-hover: #076a62;
+  --foreground-muted: #4f6668;
+  --border: #cfdfdd;
+  --primary: #08766e;
+  --primary-hover: #065f59;
   --primary-foreground: #ffffff;
   --risk-safe: #207b55;
   --risk-safe-bg: #e7f6ee;
@@ -21,9 +21,9 @@
   --risk-warning-bg: #fff4d7;
   --risk-critical: #b23a3a;
   --risk-critical-bg: #feeaea;
-  --status-online: #22865d;
-  --status-offline: #879697;
-  --status-degraded: #b8780b;
+  --status-online: #176c4a;
+  --status-offline: #5e7274;
+  --status-degraded: #8b5b08;
   --ring: #16a99a;
   --shadow-card: 0 1px 2px rgba(19, 43, 46, .04), 0 8px 24px rgba(26, 72, 73, .06);
 }

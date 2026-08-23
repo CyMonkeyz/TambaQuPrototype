@@ -116,9 +116,9 @@ export function AlertsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Situational awareness"
+        eyebrow="Perlu diperhatikan"
         title="Peringatan"
-        description="Tinjau kejadian yang membutuhkan perhatian tanpa menyamakannya dengan diagnosis atau kondisi biologis akhir."
+        description="Tinjau perubahan penting, periksa konteksnya, lalu catat tindak lanjut yang sudah dilakukan."
       />
       {isLoading ? (
         <LoadingSkeleton rows={4} />

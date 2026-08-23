@@ -49,7 +49,7 @@ const OperationsDashboard = lazy(() =>
 );
 
 export function DashboardPage() {
-  useDocumentTitle("Dashboard");
+  useDocumentTitle("Beranda");
   const user = useAppStore((state) => state.activeUser);
   const farm = useAppStore((state) => state.activeFarm);
   const selectedPondId = useAppStore((state) => state.selectedPondId);
@@ -123,7 +123,7 @@ export function DashboardPage() {
       </div>
       <div className="space-y-6 lg:hidden">
       <PageHeader
-        eyebrow="Kamis malam, 20 Agustus 2026"
+        eyebrow="Ringkasan operasional"
         title={`Selamat malam, ${user?.name.split(" ")[0] ?? "Andi"}`}
         description={`${farm?.name} · ${farm?.location}`}
         actions={<FreshnessIndicator {...freshness} />}
@@ -158,7 +158,7 @@ export function DashboardPage() {
             </div>
             <div className="grid grid-cols-2 gap-3 sm:min-w-[260px]">
               <div className="rounded-xl bg-surface-muted p-3">
-                <p className="text-xs text-foreground-muted">Risk Score</p>
+                <p className="text-xs text-foreground-muted">Skor Risiko</p>
                 <p className="mt-1 text-2xl font-semibold">
                   {selected.risk.score}
                   <span className="text-xs text-foreground-muted">/100</span>
@@ -217,7 +217,7 @@ export function DashboardPage() {
             <RiskSummary
               risk={selected.risk}
               compact
-              title="PondBrain Insight"
+              title="Ringkasan PondBrain"
             />
             <dl className="mt-4 grid grid-cols-2 gap-3">
               <div className="rounded-xl bg-surface-muted p-3">
@@ -264,7 +264,7 @@ export function DashboardPage() {
         </Card>
         <Card className="p-5 sm:p-6">
           <SectionHeader
-            eyebrow="Situational awareness"
+            eyebrow="Perlu diperhatikan"
             title="Peringatan Terbaru"
             action={
               <Link
@@ -315,8 +315,8 @@ export function DashboardPage() {
           )}
           <div className="mt-4 flex items-start gap-2 rounded-xl border border-border p-3 text-xs leading-5 text-foreground-muted">
             <BrainCircuit className="mt-0.5 shrink-0" size={15} />
-            Semua status menggunakan data sintetis yang tetap pada setiap
-            refresh.
+            Data demo akan kembali dengan nilai yang sama saat halaman dimuat
+            ulang.
           </div>
         </Card>
       </div>

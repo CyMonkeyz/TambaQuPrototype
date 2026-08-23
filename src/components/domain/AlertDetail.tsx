@@ -75,7 +75,7 @@ export function AlertDetail({
           </dd>
         </div>
         <div className="rounded-xl bg-surface-muted p-3">
-          <dt className="text-xs text-foreground-muted">Risk Score</dt>
+          <dt className="text-xs text-foreground-muted">Skor Risiko</dt>
           <dd className="mt-1 text-sm font-semibold">{risk.score} / 100</dd>
         </div>
         <div className="rounded-xl bg-surface-muted p-3">

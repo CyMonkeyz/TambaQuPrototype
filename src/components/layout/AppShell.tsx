@@ -27,7 +27,7 @@ export function AppShell() {
         <header className="no-print flex h-14 items-center justify-between border-b border-border bg-white px-5 lg:px-8">
           <AppLogo />
           <nav className="flex items-center gap-3 text-xs font-semibold">
-            <Link className="text-primary" to="/app/dashboard">Dashboard</Link>
+            <Link className="text-primary" to="/app/dashboard">Beranda</Link>
             <Link className="hidden text-primary sm:inline" to="/app/demo-control">Kontrol Demo</Link>
             <Button className="min-h-9 px-3" variant="secondary" leadingIcon={<Presentation size={15} />} onClick={togglePresentationMode}>Keluar</Button>
             <ConnectivityIndicator />

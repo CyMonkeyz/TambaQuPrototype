@@ -72,7 +72,7 @@ export function DevicesPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Sensor network"
+        eyebrow="Jaringan sensor"
         title="Manajemen Perangkat"
         description="Pantau kesehatan koneksi, daya, sinyal, firmware, dan jadwal kalibrasi seluruh perangkat."
       />
@@ -156,7 +156,7 @@ export function DevicesPage() {
               <div className="rounded-xl bg-surface-muted p-3"><dt className="text-xs text-foreground-muted">Sinkron terakhir</dt><dd className="mt-1 font-semibold">{formatWibTime(selected.device.lastSyncAt)}</dd></div>
             </dl>
             <div>
-              <h3 className="flex items-center gap-2 text-sm font-semibold"><Settings2 size={16} /> Sensor health</h3>
+              <h3 className="flex items-center gap-2 text-sm font-semibold"><Settings2 size={16} /> Kondisi sensor</h3>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {parameters.map((parameter, index) => (
                   <div key={parameter} className="flex items-center justify-between rounded-xl border border-border p-3 text-xs">

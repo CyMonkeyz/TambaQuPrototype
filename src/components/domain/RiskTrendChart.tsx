@@ -59,7 +59,7 @@ export function RiskTrendChart({
       <div
         className="mt-5 h-44 w-full min-w-0"
         role="img"
-        aria-label={`Grafik Risk Score dari ${start} menjadi ${end}`}
+        aria-label={`Grafik skor risiko dari ${start} menjadi ${end}`}
       >
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
@@ -82,7 +82,7 @@ export function RiskTrendChart({
             />
             <Tooltip
               labelFormatter={(value) => formatWibTime(String(value))}
-              formatter={(value) => [`${value}/100`, "Risk Score"]}
+              formatter={(value) => [`${value}/100`, "Skor Risiko"]}
             />
             <Line
               type="monotone"
@@ -96,8 +96,8 @@ export function RiskTrendChart({
         </ResponsiveContainer>
       </div>
       <p className="mt-2 text-xs leading-5 text-foreground-muted">
-        Risk Score berubah dari {start} menjadi {end}. Grafik berasal dari
-        aturan demo deterministik dan data historis yang sama dengan monitoring.
+        Skor risiko berubah dari {start} menjadi {end}. Grafik memakai aturan
+        demo dan riwayat data yang sama dengan halaman pemantauan.
       </p>
     </section>
   );

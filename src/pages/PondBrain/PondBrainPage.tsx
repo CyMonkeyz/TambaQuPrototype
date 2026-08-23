@@ -161,7 +161,7 @@ export function PondBrainPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Decision Support System"
+        eyebrow="Panduan keputusan"
         title="Analisis PondBrain"
         description={`${data.pond.name} · Hari ke-${data.pond.cultureDay}. Pahami risiko, alasan, dan tindakan yang dapat diverifikasi di lapangan.`}
         actions={
@@ -261,7 +261,7 @@ export function PondBrainPage() {
       <div className="grid gap-4 lg:grid-cols-[1.1fr_.9fr]">
         <Card className="p-5 sm:p-6">
           <SectionHeader
-            eyebrow="Farmer action"
+            eyebrow="Catatan lapangan"
             title="Riwayat Tindakan"
             description="Setiap catatan menyimpan siapa, apa, kapan, dan kolam terkait."
           />

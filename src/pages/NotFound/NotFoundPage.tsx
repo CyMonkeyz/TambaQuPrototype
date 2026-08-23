@@ -27,7 +27,7 @@ export function NotFoundPage() {
           className="mt-4 block text-sm font-semibold text-primary"
           to="/app/dashboard"
         >
-          Ke Dashboard
+          Kembali ke Beranda
         </Link>
       </div>
     </main>

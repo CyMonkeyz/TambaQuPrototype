@@ -32,7 +32,7 @@ export function PondRiskScore({
             id="risk-score-title"
             className="text-sm font-semibold text-primary"
           >
-            PondBrain Risk Score
+            Skor Risiko PondBrain
           </p>
           <div className="mt-2 flex items-end gap-2">
             <strong className="text-5xl font-semibold tracking-[-.06em] sm:text-6xl">
@@ -48,7 +48,7 @@ export function PondRiskScore({
       <div
         className="mt-5 grid grid-cols-[39fr_30fr_31fr] gap-1"
         role="img"
-        aria-label={`Risk Score ${risk.score} dari 100, tingkat ${risk.level === "safe" ? "Aman" : risk.level === "warning" ? "Waspada" : "Kritis"}`}
+        aria-label={`Skor risiko ${risk.score} dari 100, tingkat ${risk.level === "safe" ? "Aman" : risk.level === "warning" ? "Waspada" : "Kritis"}`}
       >
         <span className="h-3 rounded-l-full bg-risk-safe" />
         <span className="h-3 bg-risk-warning" />

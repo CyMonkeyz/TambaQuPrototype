@@ -28,7 +28,7 @@ export function MobileNavigation() {
             }
           >
             <item.icon size={20} aria-hidden="true" />
-            {item.label === "Dashboard" ? "Home" : item.label}
+            {item.label}
           </NavLink>
         ))}
         <button
@@ -37,7 +37,7 @@ export function MobileNavigation() {
           aria-label="Buka menu lainnya"
         >
           <Menu size={20} />
-          More
+          Lainnya
         </button>
       </nav>
       <Dialog

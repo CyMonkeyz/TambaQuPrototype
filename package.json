@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "verify:pwa": "node scripts/verify-pwa-build.mjs",
     "analyze:bundle": "node scripts/report-bundle-sizes.mjs",
-    "generate:pwa-assets": "pwa-assets-generator --preset minimal-2023 public/tambaqu-logo.svg"
+    "generate:pwa-assets": "pwa-assets-generator --preset minimal-2023 public/brand/tambaqu-mark.png"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",

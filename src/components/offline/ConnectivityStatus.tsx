@@ -8,6 +8,12 @@ import { useRepositoryData } from "../../hooks/useRepositoryData";
 import { Button } from "../ui/Button";
 import { Dialog } from "../ui/Overlay";
 
+const queueStatusLabels: Record<string, string> = {
+  pending: "menunggu",
+  processing: "diproses",
+  failed: "gagal",
+};
+
 export function OfflineBanner() {
   const state = useConnectivityStore();
   const mode = getEffectiveConnectivity();
@@ -42,7 +48,7 @@ export function ConnectivityIndicator() {
       </button>
       <Dialog open={open} onOpenChange={setOpen} title="Status Sinkronisasi" description="Perubahan offline diproses berurutan dan disimpan sampai berhasil tersinkron.">
         <div className="grid grid-cols-2 gap-3"><div className="rounded-xl bg-surface-muted p-3"><p className="text-xs text-foreground-muted">Menunggu</p><p className="mt-1 text-xl font-semibold">{state.pendingCount}</p></div><div className="rounded-xl bg-surface-muted p-3"><p className="text-xs text-foreground-muted">Gagal</p><p className="mt-1 text-xl font-semibold">{state.failedCount}</p></div></div>
-        <div className="mt-4 max-h-52 space-y-2 overflow-auto">{outbox.data?.map((item) => <div key={item.id} className="rounded-xl border border-border p-3"><div className="flex justify-between gap-2"><p className="text-sm font-semibold">{item.operation === "ACTION_LOG_CREATE" ? "Tindakan lapangan" : "Pembaruan peringatan"}</p><span className="text-xs capitalize text-foreground-muted">{item.status}</span></div><p className="mt-1 text-xs text-foreground-muted">{item.entityId} · Percobaan {item.attemptCount}</p>{item.lastError && <p className="mt-1 text-xs text-risk-warning">{item.lastError}</p>}</div>)}</div>
+        <div className="mt-4 max-h-52 space-y-2 overflow-auto">{outbox.data?.map((item) => <div key={item.id} className="rounded-xl border border-border p-3"><div className="flex justify-between gap-2"><p className="text-sm font-semibold">{item.operation === "ACTION_LOG_CREATE" ? "Tindakan lapangan" : "Pembaruan peringatan"}</p><span className="text-xs text-foreground-muted">{queueStatusLabels[item.status] ?? item.status}</span></div><p className="mt-1 text-xs text-foreground-muted">{item.entityId} · Percobaan {item.attemptCount}</p>{item.lastError && <p className="mt-1 text-xs text-risk-warning">{item.lastError}</p>}</div>)}</div>
         {!outbox.data?.length && <p className="mt-4 rounded-xl bg-[var(--risk-safe-bg)] p-3 text-sm text-risk-safe">Semua perubahan sudah tersinkron.</p>}
         <div className="mt-5 flex flex-wrap justify-end gap-2">{state.failedCount > 0 && <Button variant="secondary" onClick={() => void retryFailedSync()}>Coba Lagi</Button>}<Button disabled={mode === "offline" || state.pendingCount === 0} onClick={() => void syncPendingMutations()}>Sinkronkan Sekarang</Button></div>
       </Dialog>

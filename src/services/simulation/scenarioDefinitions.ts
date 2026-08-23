@@ -65,7 +65,7 @@ const warning67: DemoScenarioStep = {
   riskScore: 67,
   riskLevel: "warning",
   riskSummary:
-    "Risk Score meningkat. Perubahan terutama berkaitan dengan penurunan DO dan kenaikan amonia.",
+    "Skor risiko meningkat. Perubahan terutama berkaitan dengan penurunan DO dan kenaikan amonia.",
 };
 
 const critical76: DemoScenarioStep = {
@@ -96,7 +96,7 @@ const critical84: DemoScenarioStep = {
     severity: "critical",
     title: "Risiko kualitas air meningkat signifikan",
     description:
-      "Risk Score Kolam B mencapai tingkat Kritis pada mode simulasi.",
+      "Skor risiko Kolam B mencapai tingkat Kritis pada mode simulasi.",
     parameter: "multiple",
   },
 };
@@ -104,35 +104,35 @@ const critical84: DemoScenarioStep = {
 export const demoScenarios: DemoScenario[] = [
   {
     id: "stable",
-    name: "Stable",
+    name: "Kondisi Stabil",
     description: "Kondisi awal Kolam B aman dan parameter utama stabil.",
     pondId: "pond-b",
     steps: [stable],
   },
   {
     id: "early-warning",
-    name: "Early Warning",
+    name: "Peringatan Awal",
     description: "DO mulai menurun hingga peringatan awal muncul.",
     pondId: "pond-b",
     steps: [stable, early34, warning48],
   },
   {
     id: "warning-escalation",
-    name: "Warning Escalation",
-    description: "Cerita utama kompetisi dari kondisi Aman menuju Waspada 67.",
+    name: "Risiko Meningkat",
+    description: "Kondisi berubah bertahap dari Aman menuju Waspada.",
     pondId: "pond-b",
     steps: [stable, early34, warning48, warning58, warning67],
   },
   {
     id: "critical",
-    name: "Critical",
+    name: "Kondisi Kritis",
     description: "Indikator risiko meningkat hingga Kritis 84.",
     pondId: "pond-b",
     steps: [warning67, critical76, critical84],
   },
   {
     id: "recovery",
-    name: "Recovery",
+    name: "Pemulihan",
     description: "Monitoring lanjutan menunjukkan indikator risiko menurun.",
     pondId: "pond-b",
     steps: [
@@ -163,8 +163,8 @@ export const demoScenarios: DemoScenario[] = [
   },
   {
     id: "device-failure",
-    name: "Device Failure",
-    description: "Koneksi sensor melemah lalu terputus untuk demo contingency.",
+    name: "Gangguan Perangkat",
+    description: "Koneksi sensor melemah, terputus, lalu pulih kembali.",
     pondId: "pond-b",
     steps: [
       stable,

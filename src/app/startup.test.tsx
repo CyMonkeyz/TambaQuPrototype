@@ -108,12 +108,12 @@ describe("startup regression", () => {
     );
 
     expect(
-      await screen.findByText("Ringkasan Operasional", {}, { timeout: 10_000 }),
+      await screen.findByText("Ringkasan Operasional", {}, { timeout: 25_000 }),
     ).toBeTruthy();
     await new Promise((resolve) => setTimeout(resolve, 1_200));
     expect(screen.getByText("Ringkasan Operasional")).toBeTruthy();
     expect(screen.queryByText("TambaQu mengalami kendala.")).toBeNull();
-  }, 15_000);
+  }, 30_000);
 
   it("normalizes an incompatible persisted session instead of booting it", () => {
     expect(

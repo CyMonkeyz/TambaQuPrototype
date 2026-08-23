@@ -43,7 +43,7 @@ export function PondCard({
       <div className="mt-5 flex items-end justify-between">
         <div>
           <p className="text-xs font-medium text-foreground-muted">
-            Risk Score
+            Skor Risiko
           </p>
           <p className="mt-1 text-3xl font-semibold tracking-[-.04em]">
             {risk.score}

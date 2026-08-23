@@ -1,10 +1,10 @@
 import { Activity, BrainCircuit, CheckCircle2, Lightbulb } from "lucide-react";
 
 const steps = [
-  { label: "Sense", icon: Activity },
-  { label: "Analyze", icon: BrainCircuit },
-  { label: "Recommend", icon: Lightbulb },
-  { label: "Act & Learn", icon: CheckCircle2 },
+  { label: "Pantau", icon: Activity },
+  { label: "Pahami", icon: BrainCircuit },
+  { label: "Sarankan", icon: Lightbulb },
+  { label: "Tindak lanjuti", icon: CheckCircle2 },
 ];
 
 export function DecisionLoop({ hasAction }: { hasAction: boolean }) {

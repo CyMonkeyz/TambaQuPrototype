@@ -21,7 +21,7 @@ export function PondBrainInsightCard({
     risk.level === "critical"
       ? "Kombinasi DO rendah dan peningkatan parameter limbah menunjukkan kondisi berisiko tinggi. Prioritaskan pemeriksaan kondisi kolam dan tindakan operasional."
       : risk.level === "warning"
-        ? `Risk Score meningkat ${change} poin dalam 6 jam terakhir. Perubahan terutama berkaitan dengan penurunan DO dan kenaikan amonia.`
+        ? `Skor risiko meningkat ${change} poin dalam 6 jam terakhir. Perubahan terutama berkaitan dengan penurunan DO dan kenaikan amonia.`
         : "Parameter utama relatif stabil. Tidak ada peningkatan risiko signifikan pada periode monitoring terakhir.";
   return (
     <section aria-labelledby="pondbrain-insight-title">
@@ -37,7 +37,7 @@ export function PondBrainInsightCard({
             id="pondbrain-insight-title"
             className="mt-1 text-lg font-semibold"
           >
-            Insight PondBrain
+            Ringkasan PondBrain
           </h2>
         </div>
       </div>
@@ -59,7 +59,7 @@ export function PondBrainInsightCard({
       )}
       <div className="mt-4 rounded-xl bg-surface-muted p-4">
         <div className="flex items-center justify-between gap-4 text-sm">
-          <span className="font-semibold">Kepercayaan Data</span>
+          <span className="font-semibold">Kualitas data pendukung</span>
           <strong>{cached ? "Terbatas" : `${confidence}%`}</strong>
         </div>
         <p className="mt-1 text-xs leading-5 text-foreground-muted">
