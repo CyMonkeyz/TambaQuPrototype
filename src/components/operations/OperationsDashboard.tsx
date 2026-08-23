@@ -260,7 +260,7 @@ export function OperationsDashboard({
         <Card className="p-5">
           <div className="flex items-start justify-between"><div><h2 className="font-semibold">Tren Risiko Tambak</h2><p className="mt-1 text-xs text-foreground-muted">Perbandingan indikator risiko 12 titik terbaru. Kolam B dan C disorot.</p></div><span className="text-xs text-foreground-muted">Skor 0–100</span></div>
           <div className="mt-4 h-64" role="img" aria-label="Grafik tren skor risiko seluruh kolam dalam 12 titik terbaru">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
               <LineChart data={trend} margin={{ left: -20, right: 10 }}>
                 <CartesianGrid stroke="#e6efed" strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="time" tick={{ fontSize: 10, fill: "#607476" }} tickLine={false} axisLine={false} />

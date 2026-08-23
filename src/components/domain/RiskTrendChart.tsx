@@ -61,7 +61,7 @@ export function RiskTrendChart({
         role="img"
         aria-label={`Grafik skor risiko dari ${start} menjadi ${end}`}
       >
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
           <LineChart
             data={points}
             margin={{ top: 5, right: 8, left: -22, bottom: 0 }}

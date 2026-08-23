@@ -138,7 +138,7 @@ export default function WaterQualityChart({
         role="img"
         aria-label={`Grafik ${meta.label} selama ${rangeLabels[range]}`}
       >
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
           <LineChart
             data={chartData}
             margin={{ top: 8, right: 8, bottom: 0, left: -18 }}
