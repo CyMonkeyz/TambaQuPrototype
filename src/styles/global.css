@@ -1,6 +1,8 @@
 @import "tailwindcss" source("../");
 
 :root {
+  /* Keep native controls and automatic browser darkening in light mode. */
+  color-scheme: only light;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--foreground);
   background: var(--background);
@@ -74,6 +76,26 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .pilot-input { display:block; width:100%; min-height:48px; padding:12px 14px; border:1px solid var(--border); border-radius:12px; background:white; color:var(--foreground); }
 .pilot-label { display:block; font-size:14px; font-weight:600; margin-bottom:8px; }
 .pilot-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr)); gap:20px; }
+
+/* Native scrolling: discreet thumb, no nested wheel/touch chaining. */
+.menu-scroll {
+  --menu-scroll-thumb: #0b6e8e40;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--menu-scroll-thumb) transparent;
+  scrollbar-gutter: stable;
+  scroll-padding-block: 12px;
+  -webkit-overflow-scrolling: touch;
+}
+.menu-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
+.menu-scroll::-webkit-scrollbar-track { background: transparent; }
+.menu-scroll::-webkit-scrollbar-thumb { background: var(--menu-scroll-thumb); border-radius: 999px; }
+.workspace-sidebar { height: 100vh; height: 100dvh; }
+.workspace-sidebar .menu-scroll {
+  --menu-scroll-thumb: #d6eaf32e;
+  mask-image: linear-gradient(to bottom, transparent, #000 10px, #000 calc(100% - 10px), transparent);
+}
+.workspace-sidebar:hover .menu-scroll, .workspace-sidebar:focus-within .menu-scroll { --menu-scroll-thumb: #d6eaf360; }
 
 /* Shared operational workspace: light content, navy navigation. */
 .workspace-sidebar{background:linear-gradient(165deg,#0B6E8E 0%,#0A526C 42%,#083F55 100%);color:#e5f1f6;border-right:1px solid #0a526c;transition:width 180ms ease}

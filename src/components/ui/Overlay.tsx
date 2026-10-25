@@ -59,9 +59,9 @@ export function Dialog({
               opener.current.focus();
             }
           }}
-          className="fixed left-1/2 top-1/2 z-50 max-h-[85vh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-2xl border border-border bg-surface p-5 shadow-2xl sm:p-6"
+          className="fixed left-1/2 top-1/2 z-50 flex max-h-[85dvh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-2xl border border-border bg-surface p-5 shadow-2xl sm:p-6"
         >
-          <div className="pr-10">
+          <div className="shrink-0 pr-10">
             <DialogPrimitive.Title className="text-lg font-semibold">
               {title}
             </DialogPrimitive.Title>
@@ -77,7 +77,7 @@ export function Dialog({
           >
             <X size={19} />
           </DialogPrimitive.Close>
-          <div className="mt-5">{children}</div>
+          <div className="menu-scroll -mr-2 mt-5 min-h-0 overflow-y-auto pr-2">{children}</div>
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>

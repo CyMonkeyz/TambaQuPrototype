@@ -35,7 +35,7 @@ export function WorkspaceSidebar({
   return (
     <aside
       className={cn(
-        "workspace-sidebar sticky top-0 hidden h-screen shrink-0 flex-col py-6 lg:flex",
+        "workspace-sidebar sticky top-0 hidden h-dvh min-h-0 shrink-0 flex-col overflow-hidden py-6 lg:flex",
         collapsed ? "w-[88px] px-3" : "w-[248px] px-4",
       )}
     >
@@ -43,7 +43,7 @@ export function WorkspaceSidebar({
         to={groups[0]?.items[0]?.href ?? "/"}
         aria-label="Beranda TambaQu"
         className={cn(
-          "mx-1 flex min-h-14 items-center rounded-2xl bg-white",
+          "mx-1 flex min-h-14 shrink-0 items-center rounded-2xl bg-white",
           collapsed ? "justify-center p-2" : "px-3",
         )}
       >
@@ -51,7 +51,7 @@ export function WorkspaceSidebar({
       </Link>
       <button
         type="button"
-        className="sidebar-toggle mt-5 flex min-h-11 items-center justify-center gap-2 rounded-xl text-xs"
+        className="sidebar-toggle mt-5 flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl text-xs"
         onClick={onToggle}
         aria-label={collapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
         aria-expanded={!collapsed}
@@ -65,7 +65,7 @@ export function WorkspaceSidebar({
           </>
         )}
       </button>
-      <nav className="mt-4 flex-1 overflow-y-auto" aria-label="Navigasi utama">
+      <nav className="menu-scroll -mr-2 mt-4 min-h-0 flex-1 overflow-y-auto pr-2" aria-label="Navigasi utama">
         {groups.map((group) => (
           <div key={group.label} className="mb-6">
             <p
@@ -99,7 +99,7 @@ export function WorkspaceSidebar({
           </div>
         ))}
       </nav>
-      <div className="space-y-2 border-t border-white/10 pt-4">
+      <div className="shrink-0 space-y-2 border-t border-white/10 pt-4">
         {!collapsed && (
           <div className="rounded-xl bg-white/5 px-3 py-3">
             <p className="text-xs font-semibold text-white">
