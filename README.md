@@ -1,8 +1,35 @@
 # TambaQu
 
+**Fokus saat ini: demo expo lokal dengan akun wajib dan pembayaran simulasi.**
+Panduan terkini: [Expo Readiness](./EXPO_READINESS.md). Cloud, AI daring,
+pembayaran nyata, dan perangkat fisik tidak diaktifkan. Dokumen demo/pilot lama
+merupakan riwayat, bukan petunjuk login rilis ini.
+
+Logo udang, tema biru–teal, dan lingkup modul kini mengikuti lampiran proposal terbaru.
+[Matriks proposal dan identitas](./PROPOSAL_IDENTITY_ALIGNMENT.md) mencatat fokus MVP,
+tahap lanjutan, skema sewa, dan infrastruktur bersama.
+
+## Dashboard operasional
+
+Buka `/` dan daftar akun email/password khusus demo pada browser ini, lalu masuk.
+Seluruh workspace wajib login, termasuk alias `/demo`, `/expo`, dan `/pilot`.
+Tidak ada akses tamu atau mode presentasi. Subscription, checkout, dan invoice
+tersedia di `/app/billing`; seluruh transaksi adalah simulasi tanpa uang nyata.
+
+Panduan dan bukti pemeriksaan UI: [DASHBOARD_UI_WORKFLOW.md](./DASHBOARD_UI_WORKFLOW.md).
+
+## Pilot 0.7
+
+Legacy cloud modules are retained for future work, but are not required or enabled
+by default in the expo build. The active experience uses IndexedDB local accounts
+and simulated billing. `/pilot` redirects through the same local login guard.
+
+See [PILOT_WORKFLOW.md](./PILOT_WORKFLOW.md) for setup, staged acceptance gates,
+image-to-text context preservation, device API, and the remaining production checks.
+
 TambaQu is a responsive, installable aquaculture decision-support PWA for monitoring and mitigating operational risk in vannamei shrimp ponds. The final competition MVP combines monitoring, PondBrain explanations, field actions, deterministic simulation, cached domain data, offline mutations, and reconnect synchronization.
 
-> All values shown in the current application are synthetic and intended only for product demonstration. They are not field observations, validated scientific predictions, or automated diagnoses.
+> Demo values are synthetic and intended only for product demonstration. They are not field observations, validated scientific predictions, or automated diagnoses. The cloud pilot uses account data and does not fill missing data with simulation.
 
 ## Requirements
 
@@ -16,7 +43,7 @@ npm install
 npm run dev
 ```
 
-Open the local address printed by Vite, choose **Masuk sebagai Demo**, and enter the workspace as Andi Setiawan at Tambak Mina Jaya.
+Open the local address printed by Vite, choose **Belum punya akun? Daftar**, and create an email/password account using a demo-only password. Accounts and data are local to this browser; no email verification or real payment occurs.
 
 ## Commands
 
@@ -64,7 +91,7 @@ See [PRODUCT_SPEC.md](./PRODUCT_SPEC.md), [ARCHITECTURE.md](./ARCHITECTURE.md), 
 
 ### Test the dashboard
 
-Start the development server, choose **Masuk sebagai Demo**, then verify that Kolam B is selected. Select a sensor card, switch between 6 Jam, 24 Jam, and 7 Hari, change to Kolam C, filter the Ponds page to Waspada, and open Kolam B detail. All interactions use fixed synthetic data and require no network API.
+Start the development server, register or log in with a local demo account, then verify that Kolam B is selected. Select a sensor card, switch between 6 Jam, 24 Jam, and 7 Hari, change to Kolam C, filter the Ponds page to Waspada, and open Kolam B detail. All interactions use fixed synthetic data and require no network API.
 
 ## Phase 3 decision-support loop
 

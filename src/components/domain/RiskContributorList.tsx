@@ -5,7 +5,7 @@ function getContributorLabel(item: RiskContributor) {
   return item.parameter === "weatherContext"
     ? "Konteks Lingkungan"
     : item.parameter === "dissolvedOxygen"
-      ? "Dissolved Oxygen (DO)"
+      ? "Oksigen terlarut (DO)"
       : getSensorMeta(item.parameter).label;
 }
 

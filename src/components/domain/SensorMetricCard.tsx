@@ -44,16 +44,27 @@ export function SensorMetricCard({
   trend,
   selected = false,
   onSelect,
+  sourceLabel,
+  measuredAt,
+  assessmentLabel,
 }: {
   parameter: SensorParameter;
-  value: number;
+  value: number | null;
   trend: TrendCalculation;
   selected?: boolean;
   onSelect?: () => void;
+  sourceLabel?: string;
+  measuredAt?: string;
+  assessmentLabel?: string;
 }) {
-  const formatted = formatSensorValue(parameter, value);
+  const formatted = formatSensorValue(parameter, value ?? 0);
   const description = getSensorMeta(parameter).description;
-  const health = healthConfig[getSensorHealth(parameter, value)];
+  const health = assessmentLabel
+    ? {
+        label: assessmentLabel,
+        className: "text-foreground-muted bg-surface-muted",
+      }
+    : healthConfig[getSensorHealth(parameter, value ?? 0)];
   const interpretation = interpretTrend(parameter, trend.direction);
   const TrendIcon =
     trend.direction === "up"
@@ -91,17 +102,28 @@ export function SensorMetricCard({
       <p className="mt-3 text-xs font-semibold text-foreground-muted">
         {formatted.label}
       </p>
+      <p className="mt-1 text-[10px] text-foreground-muted">
+        {sourceLabel ??
+          (["dissolvedOxygen", "ph", "temperature"].includes(parameter)
+            ? "Sensor · data simulasi"
+            : "Uji manual · data simulasi")}
+      </p>
       <p className="mt-1 text-2xl font-semibold tracking-[-.04em]">
-        {formatted.value}{" "}
-        {formatted.unit && (
+        {value === null ? "Belum diukur" : formatted.value}{" "}
+        {formatted.unit && value !== null && (
           <span className="text-xs font-medium text-foreground-muted">
             {formatted.unit}
           </span>
         )}
       </p>
+      {measuredAt && (
+        <time className="block text-[10px] text-foreground-muted">
+          {new Date(measuredAt).toLocaleString("id-ID")}
+        </time>
+      )}
       <div
         className={cn(
-          "mt-2 flex items-center gap-1.5 text-xs font-semibold",
+          "mt-2 flex flex-wrap items-center gap-1.5 text-xs font-semibold",
           interpretation.sentiment === "negative"
             ? "text-risk-critical"
             : interpretation.sentiment === "positive"

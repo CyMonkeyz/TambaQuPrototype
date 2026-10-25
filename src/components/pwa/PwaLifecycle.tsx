@@ -1,10 +1,12 @@
 import { Download, RefreshCw, X } from "lucide-react";
+import { useLocation } from 'react-router-dom';
 import { useRegisterSW } from "virtual:pwa-register/react";
 import { Button } from "../ui/Button";
 import { useSimulationStore } from "../../store/simulation-store";
 import { usePwaInstall } from "../../hooks/usePwaInstall";
 
 export function PwaLifecycle() {
+  const location = useLocation();
   const presentationMode = useSimulationStore((state) => state.presentationMode);
   const simulationStatus = useSimulationStore((state) => state.status);
   usePwaInstall();
@@ -17,7 +19,7 @@ export function PwaLifecycle() {
     },
   });
 
-  if (!needRefresh || presentationMode || simulationStatus === "running") return null;
+  if (!needRefresh || presentationMode || simulationStatus === "running" || location.pathname === '/expo') return null;
   return (
     <section className="no-print fixed bottom-5 right-5 z-50 w-[calc(100%-2.5rem)] max-w-sm rounded-2xl border border-border bg-surface p-4 shadow-2xl" aria-live="polite">
       <button className="absolute right-3 top-3 grid size-9 place-items-center rounded-xl text-foreground-muted hover:bg-surface-muted" aria-label="Tutup pemberitahuan pembaruan" onClick={() => setNeedRefresh(false)}><X size={17} /></button>

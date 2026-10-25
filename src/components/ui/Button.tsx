@@ -8,6 +8,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   isLoading?: boolean;
   leadingIcon?: ReactNode;
+  trailingIcon?: ReactNode;
 }
 
 const variants: Record<ButtonVariant, string> = {
@@ -24,6 +25,7 @@ export function Button({
   variant = "primary",
   isLoading,
   leadingIcon,
+  trailingIcon,
   disabled,
   children,
   ...props
@@ -44,6 +46,7 @@ export function Button({
         leadingIcon
       )}
       {children}
+      {trailingIcon}
     </button>
   );
 }

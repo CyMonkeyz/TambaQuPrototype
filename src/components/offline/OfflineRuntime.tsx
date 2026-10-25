@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useLocation } from 'react-router-dom';
 import { initializeOfflineRuntime } from "../../services/offline/offlineRuntime";
 import { syncPendingMutations } from "../../services/sync/syncManager";
 import {
@@ -7,6 +8,11 @@ import {
 } from "../../store/connectivity-store";
 
 export function OfflineRuntime() {
+  const location = useLocation();
+  return location.pathname.startsWith('/app') ? <DemoOfflineRuntime /> : null;
+}
+
+function DemoOfflineRuntime() {
   const demoOverride = useConnectivityStore((state) => state.demoOverride);
   const browserOnline = useConnectivityStore((state) => state.browserOnline);
   const setBrowserOnline = useConnectivityStore((state) => state.setBrowserOnline);

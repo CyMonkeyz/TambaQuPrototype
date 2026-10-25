@@ -5,7 +5,7 @@ import {
   BrainCircuit,
   MapPin,
 } from "lucide-react";
-import { lazy, Suspense, useRef, useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { SectionHeader } from "../../components/common/SectionHeader";
 import { DeviceStatus } from "../../components/domain/DeviceStatus";
@@ -50,7 +50,6 @@ export function PondDetailPage() {
   const [parameter, setParameter] =
     useState<SensorParameter>("dissolvedOxygen");
   const [range, setRange] = useState<MonitoringRange>("24h");
-  const chartRef = useRef<HTMLDivElement>(null);
   useDocumentTitle(data?.pond.name ?? "Detail Kolam");
 
   if (isLoading) return <LoadingSkeleton rows={5} />;
@@ -84,13 +83,6 @@ export function PondDetailPage() {
         : "Belum tersedia";
   const chooseParameter = (nextParameter: SensorParameter) => {
     setParameter(nextParameter);
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    chartRef.current?.scrollIntoView({
-      behavior: reducedMotion ? "auto" : "smooth",
-      block: "center",
-    });
   };
 
   return (
@@ -104,6 +96,25 @@ export function PondDetailPage() {
           Kondisi Kolam{" "}
           <span className="hidden sm:inline">/ {data.pond.name}</span>
         </Link>
+      </nav>
+      <nav aria-label="Kegiatan kolam" className="flex flex-wrap gap-2">
+        {[
+          ["weather", "Cuaca"],
+          ["aeration", "Aerasi · simulasi"],
+          ["profit", "Biaya & hasil"],
+          ["biofloc", "Uji air & bioflok"],
+          ["feed", "Pakan · tahap lanjutan"],
+        ].map(([id, label]) => (
+          <Link
+            key={id}
+            to={`/app/modules/${id}`}
+            onClick={() => useAppStore.getState().selectPond(data.pond.id)}
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-white px-4 text-sm font-semibold text-primary"
+          >
+            {label}
+            <ArrowRight size={14} />
+          </Link>
+        ))}
       </nav>
       <Card className="p-5 sm:p-6">
         <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-start">
@@ -148,7 +159,7 @@ export function PondDetailPage() {
         <Card className="p-5 sm:p-6">
           <SectionHeader
             eyebrow="Kondisi air saat ini"
-            title="Pembacaan Sensor"
+            title="Sensor utama dan uji tambahan"
             description={`Diperbarui ${formatWibTime(data.reading.timestamp)}`}
           />
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -173,7 +184,7 @@ export function PondDetailPage() {
         </Card>
       </div>
       <Card className="p-5 sm:p-6">
-        <div ref={chartRef}>
+        <div>
           <Suspense fallback={<LoadingSkeleton rows={2} />}>
             <WaterQualityChart
               history={data.history}
@@ -235,7 +246,10 @@ export function PondDetailPage() {
           </div>
         </Card>
         <Card className="p-5 sm:p-6">
-          <SectionHeader eyebrow="Kesehatan perangkat" title="Perangkat Sensor" />
+          <SectionHeader
+            eyebrow="Kesehatan perangkat"
+            title="Perangkat Sensor"
+          />
           <DeviceStatus
             device={data.device}
             referenceTimestamp={data.reading.timestamp}

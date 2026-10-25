@@ -1,152 +1,58 @@
-import { ArrowRight, Eye, EyeOff, ShieldCheck } from "lucide-react";
-import { useState, type FormEvent } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import { AppLogo } from "../../components/common/AppLogo";
-import { Button } from "../../components/ui/Button";
-import { toast } from "../../components/ui/toast-api";
-import { getDemoSession } from "../../services/demoSession";
-import { useAppStore } from "../../store/app-store";
-import { useDocumentTitle } from "../../hooks/useDocumentTitle";
-
+import { useState, type FormEvent } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { ArrowRight, Eye, EyeOff, ShieldCheck, Waves, Database } from 'lucide-react';
+import { AppLogo } from '../../components/common/AppLogo';
+import { Button } from '../../components/ui/Button';
+import { loginLocal, registerLocal, useLocalSession } from '../../services/localAuth';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 export function LoginPage() {
-  useDocumentTitle("Masuk");
-  const [showPassword, setShowPassword] = useState(false);
-  const enterDemo = useAppStore((state) => state.enterDemo);
-  const hasSession = useAppStore((state) => Boolean(state.activeUser));
-  const navigate = useNavigate();
-
-  if (hasSession) return <Navigate to="/app/dashboard" replace />;
-
-  const submitLogin = (event: FormEvent) => {
-    event.preventDefault();
-    toast.info("Akun tim belum aktif di versi ini. Silakan gunakan Mode Demo.");
-  };
-
-  const startDemo = () => {
-    const { user, farm } = getDemoSession();
-    enterDemo(user, farm);
-    navigate("/app/dashboard");
-  };
-
-  return (
-    <main className="grid min-h-screen bg-surface lg:grid-cols-[1.08fr_.92fr]">
-      <section className="relative hidden overflow-hidden bg-[#0b4f50] p-14 text-white lg:flex lg:flex-col lg:justify-between">
-        <div className="absolute -right-24 top-28 size-72 rounded-full border border-white/10" />
-        <div className="absolute -right-6 top-44 size-72 rounded-full border border-white/10" />
-        <div className="relative w-24 rounded-3xl border border-white/20 bg-white p-3 shadow-xl shadow-black/10">
-          <img
-            src="/brand/tambaqu-lockup.png"
-            alt="TambaQu"
-            width={720}
-            height={1000}
-            className="h-auto w-full object-contain"
-          />
-        </div>
-        <div className="relative max-w-xl">
-          <span className="mb-5 inline-flex rounded-full bg-white/10 px-3 py-1.5 text-sm font-semibold">
-            Ruang kerja operasional tambak
-          </span>
-          <h1 className="text-5xl font-semibold leading-[1.08] tracking-[-.045em]">
-            Lihat yang berubah. Tentukan apa yang perlu dilakukan.
-          </h1>
-          <p className="mt-5 max-w-lg text-lg leading-8 text-white/72">
-            Data kualitas air, peringatan, dan catatan tindakan disatukan agar
-            tim tambak tidak perlu menebak langkah berikutnya.
-          </p>
-          <div className="mt-10 grid max-w-lg grid-cols-3 gap-3 text-sm">
-            <div className="rounded-xl bg-white/[.08] p-4">
-              <strong className="block text-xl">24 jam</strong>
-              <span className="mt-1 block text-white/70">Pemantauan</span>
-            </div>
-            <div className="rounded-xl bg-white/[.08] p-4">
-              <strong className="block text-xl">4 kolam</strong>
-              <span className="mt-1 block text-white/70">Data contoh</span>
-            </div>
-            <div className="rounded-xl bg-white/[.08] p-4">
-              <strong className="block text-xl">1 alur</strong>
-              <span className="mt-1 block text-white/70">Pantau–tindak</span>
-            </div>
-          </div>
-        </div>
-        <p className="relative flex items-center gap-2 text-sm text-white/60">
-          <ShieldCheck size={17} />
-          Panduan keputusan untuk budidaya udang vaname
-        </p>
-      </section>
-      <section className="flex items-start justify-center px-5 py-8 lg:items-center lg:py-10">
-        <div className="w-full max-w-md">
-          <div className="mb-10 lg:hidden">
-            <AppLogo />
-          </div>
-          <p className="text-sm font-semibold text-primary">Coba TambaQu</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-[-.04em]">
-            Buka ruang kerja tambak
-          </h1>
-          <p className="mt-3 leading-7 text-foreground-muted">
-            Masuk ke mode demo untuk mencoba pemantauan kolam dan alur tindak
-            lanjut dengan data contoh yang konsisten.
-          </p>
-          <Button className="mt-8 w-full" onClick={startDemo}>
-            Masuk ke Mode Demo <ArrowRight size={17} />
-          </Button>
-          <div className="mt-5 rounded-xl border border-border bg-surface-muted p-4 text-sm leading-6 text-foreground-muted">
-            <strong className="text-foreground">Tentang data demo</strong>
-            <span className="mt-1 block">
-              Angka dan kejadian dibuat untuk memperagakan alur produk, bukan
-              hasil pengamatan lapangan.
-            </span>
-          </div>
-          <div className="my-6 flex items-center gap-3 text-xs font-medium text-foreground-muted">
-            <span className="h-px flex-1 bg-border" />
-            Akses tim tambak
-            <span className="h-px flex-1 bg-border" />
-          </div>
-          <p className="mb-5 text-sm leading-6 text-foreground-muted">
-            Akun operasional belum dihubungkan pada versi demo ini.
-          </p>
-          <form className="mt-8 space-y-5" onSubmit={submitLogin}>
-            <label className="block text-sm font-semibold" htmlFor="email">
-              Email
-            </label>
-            <input
-              id="email"
-              className="-mt-3 h-12 w-full rounded-xl border border-border bg-white px-4 outline-none transition-colors focus:border-primary"
-              type="email"
-              autoComplete="email"
-              placeholder="nama@email.com"
-              required
-            />
-            <label className="block text-sm font-semibold" htmlFor="password">
-              Kata sandi
-            </label>
-            <div className="relative -mt-3">
-              <input
-                id="password"
-                className="h-12 w-full rounded-xl border border-border bg-white px-4 pr-12 outline-none transition-colors focus:border-primary"
-                type={showPassword ? "text" : "password"}
-                autoComplete="current-password"
-                placeholder="Masukkan kata sandi"
-                required
-              />
-              <button
-                type="button"
-                className="absolute right-1 top-1 grid size-10 place-items-center rounded-lg text-foreground-muted hover:bg-surface-muted"
-                onClick={() => setShowPassword((value) => !value)}
-                aria-label={
-                  showPassword
-                    ? "Sembunyikan kata sandi"
-                    : "Tampilkan kata sandi"
-                }
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-            <Button className="w-full" type="submit">
-              Masuk dengan Akun
-            </Button>
-          </form>
-        </div>
-      </section>
-    </main>
-  );
+  useDocumentTitle('Masuk');
+  const {session,loading}=useLocalSession();
+  const navigate=useNavigate();
+  const [mode,setMode]=useState<'login'|'signup'>('login');
+  const [name,setName]=useState(''), [email,setEmail]=useState(''), [password,setPassword]=useState(''), [confirmation,setConfirmation]=useState('');
+  const [visible,setVisible]=useState(false), [busy,setBusy]=useState(false), [error,setError]=useState(''), [help,setHelp]=useState(false);
+  async function submit(event:FormEvent) {
+    event.preventDefault(); if(busy)return; setError('');
+    if(mode==='signup' && password!==confirmation){setError('Konfirmasi kata sandi belum sama.');return;}
+    setBusy(true);
+    try {
+      if(mode==='signup') await registerLocal(email,password,name);
+      else await loginLocal(email,password);
+      setPassword('');setConfirmation('');navigate('/demo',{replace:true});
+    }catch(e){setError(e instanceof Error ? e.message : 'Penyimpanan akun belum tersedia. Coba lagi.');}
+    finally{setBusy(false);}
+  }
+  if(session&&!loading)return <Navigate to='/demo' replace/>;
+  return <main className='login-page min-h-screen bg-background lg:grid lg:grid-cols-[1.05fr_1fr]'>
+    <section className='relative hidden flex-col justify-between overflow-hidden bg-[#083F55] p-12 text-white lg:flex'>
+      <div className='z-10 w-fit rounded-2xl bg-white p-4'><AppLogo/></div>
+      <div className='relative z-10 my-12 max-w-xl'>
+        <span className='inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-teal-200'><Waves size={16}/> Budidaya lebih terukur</span>
+        <h1 className='mt-6 text-5xl font-semibold leading-tight tracking-tight'>Dari kondisi air,<br/>ke keputusan yang lebih baik.</h1>
+        <p className='mt-6 max-w-md text-lg leading-8 text-white/75'>Satu ruang untuk memantau kolam, mencatat budidaya, dan merencanakan layanan TambaQu.</p>
+        <div className='mt-9 grid grid-cols-3 gap-3'>{[['PondBrain','Analitik budidaya'],['PondHub','Sensor terhubung'],['Pondivator','Pendampingan']].map(([title,description])=><div key={title} className='rounded-2xl border border-white/15 bg-white/5 p-4'><p className='text-sm font-semibold'>{title}</p><p className='mt-2 text-xs leading-5 text-white/60'>{description}</p></div>)}</div>
+      </div>
+      <p className='relative z-10 flex items-center gap-2 text-xs leading-5 text-white/65'><Database size={16}/> Expo interaktif · data simulasi · tersimpan di perangkat ini</p>
+      <div className='pointer-events-none absolute -right-44 top-24 size-[550px] rounded-full border-[80px] border-teal-300/10'/>
+    </section>
+    <section className='flex items-center justify-center px-5 py-10 sm:px-10'><div className='w-full max-w-md'>
+      <div className='mb-8 lg:hidden'><AppLogo/></div>
+      <p className='text-xs font-semibold uppercase tracking-[.16em] text-primary'>Ruang kerja TambaQu</p>
+      <h1 className='mt-3 text-3xl font-semibold tracking-tight'>{mode==='signup'?'Buat akun TambaQu':'Masuk ke TambaQu'}</h1>
+      <p className='mb-6 mt-3 text-sm leading-6 text-foreground-muted'>{mode==='signup'?'Daftar sekali untuk menjelajahi seluruh pengalaman expo.':'Gunakan email dan kata sandi akun yang kamu daftarkan di browser ini.'}</p>
+      <div className='mb-6 rounded-2xl border border-teal-200 bg-teal-50 p-4 text-xs leading-5 text-teal-900'><p className='mb-1 flex items-center gap-2 font-semibold'><ShieldCheck size={16}/> Akun lokal khusus demo</p>Tidak terhubung ke email atau server. Akun tidak tersinkron antarperangkat. Gunakan kata sandi khusus demo, bukan kata sandi pribadi.</div>
+      <form onSubmit={submit} className='space-y-4' aria-label={mode==='signup'?'Pendaftaran akun demo':'Masuk akun demo'}>
+        {mode==='signup'&&<label className='pilot-label'>Nama lengkap<input className='pilot-input mt-2' autoComplete='name' required maxLength={80} value={name} onChange={e=>setName(e.target.value)} disabled={busy}/></label>}
+        <label className='pilot-label'>Email<input className='pilot-input mt-2' type='email' autoComplete='email' required maxLength={254} value={email} onChange={e=>setEmail(e.target.value)} placeholder='nama@email.com' disabled={busy}/></label>
+        <label className='pilot-label'>Kata sandi<div className='relative mt-2'><input className='pilot-input pr-14' type={visible?'text':'password'} required minLength={mode==='signup'?10:1} maxLength={128} autoComplete={mode==='signup'?'new-password':'current-password'} value={password} onChange={e=>setPassword(e.target.value)} disabled={busy}/><button type='button' className='absolute right-1 top-1 grid size-10 place-items-center' aria-label={visible?'Sembunyikan kata sandi':'Tampilkan kata sandi'} aria-pressed={visible} onClick={()=>setVisible(!visible)}>{visible?<EyeOff size={18}/>:<Eye size={18}/>}</button></div></label>
+        {mode==='signup'&&<label className='pilot-label'>Konfirmasi kata sandi<input className='pilot-input mt-2' type='password' autoComplete='new-password' required minLength={10} maxLength={128} value={confirmation} onChange={e=>setConfirmation(e.target.value)} disabled={busy}/><span className='mt-1 block text-xs font-normal text-foreground-muted'>Minimal 10 karakter. Email tidak diverifikasi pada demo ini.</span></label>}
+        {error&&<p role='alert' className='rounded-xl bg-red-50 p-3 text-sm text-red-700'>{error}</p>}
+        <Button className='w-full' isLoading={busy} disabled={busy||loading} type='submit'>{mode==='signup'?'Daftar & masuk':'Masuk'}<ArrowRight size={17}/></Button>
+      </form>
+      <div className='mt-4 flex flex-wrap items-center justify-between gap-2'><button type='button' className='min-h-11 text-sm font-semibold text-primary' disabled={busy} onClick={()=>{setMode(mode==='login'?'signup':'login');setError('');setPassword('');setConfirmation('');}}>{mode==='signup'?'Sudah punya akun? Masuk':'Belum punya akun? Daftar'}</button><button type='button' className='min-h-11 text-xs text-foreground-muted underline' onClick={()=>setHelp(!help)} aria-expanded={help}>Bantuan masuk</button></div>
+      {help&&<p role='status' className='mt-3 rounded-xl bg-surface-muted p-4 text-xs leading-6 text-foreground-muted'>Akun hanya ada di browser tempat mendaftar. Tidak ada pengiriman tautan reset melalui email. Jika lupa kata sandi, buat akun demo baru dengan email lain. Menghapus data situs juga menghapus akun dan data demo.</p>}
+      <p className='mt-7 border-t border-border pt-5 text-center text-xs leading-5 text-foreground-muted'>Seluruh sensor, rekomendasi, langganan, dan pembayaran di ruang expo merupakan simulasi. Tidak ada penagihan uang sungguhan.</p>
+    </div></section>
+  </main>;
 }

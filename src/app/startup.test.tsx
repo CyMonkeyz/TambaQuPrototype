@@ -3,7 +3,15 @@
 import "fake-indexeddb/auto";
 import { cleanup, render, screen } from "@testing-library/react";
 import Dexie from "dexie";
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import { AppProviders } from "./providers/AppProviders";
 import { AppRouter } from "./router";
@@ -14,6 +22,9 @@ import { TambaQuDatabase } from "../services/offline/db";
 import { resetOfflineDataFromRemote } from "../services/offline/persistenceService";
 import { useAppStore, normalizePersistedSession } from "../store/app-store";
 import { useConnectivityStore } from "../store/connectivity-store";
+
+const auth = vi.hoisted(() => ({ authenticated: true }));
+vi.mock("../services/localAuth", () => ({ useLocalSession: () => ({ session: auth.authenticated ? {user: {id: "user-owner", name: "Demo", email:"demo@example.test"}, expiresAt: Date.now()+3600000} : null, loading:false }), loginLocal:vi.fn(),registerLocal:vi.fn(),logoutLocal:vi.fn() }));
 
 vi.mock("virtual:pwa-register/react", () => ({
   useRegisterSW: () => ({
@@ -47,6 +58,7 @@ class ResizeObserverStub {
 }
 
 beforeAll(() => {
+  window.scrollTo = vi.fn();
   vi.stubGlobal("ResizeObserver", ResizeObserverStub);
   window.matchMedia = vi.fn().mockImplementation((query: string) => ({
     matches: false,
@@ -74,9 +86,10 @@ beforeAll(() => {
 });
 
 beforeEach(async () => {
+  auth.authenticated = true;
   localStorage.clear();
   useAppStore.setState({
-    activeUser: demoUser,
+    activeUser: {...demoUser, id:"user-owner"},
     activeFarm: demoFarm,
     selectedPondId: "pond-b",
     sidebarCollapsed: false,
@@ -90,7 +103,7 @@ beforeEach(async () => {
     storageAvailable: true,
   });
   await resetOfflineDataFromRemote();
-});
+}, 30_000); // Large fake-IndexedDB fixture setup; UI readiness keeps its own deadline.
 
 afterEach(() => {
   cleanup();
@@ -98,6 +111,57 @@ afterEach(() => {
 });
 
 describe("startup regression", () => {
+  it("opens login without a public demo entry when there is no authenticated account", async () => {
+    auth.authenticated = false;
+    useAppStore.setState({
+      activeUser: null,
+      activeFarm: null,
+      demoMode: false,
+      selectedPondId: null,
+    });
+    render(
+      <MemoryRouter initialEntries={["/"]}>
+        <AppProviders>
+          <AppRouter />
+        </AppProviders>
+      </MemoryRouter>,
+    );
+    expect(
+      await screen.findByRole("heading", { name: "Masuk ke TambaQu" }),
+    ).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Coba Demo" })).toBeNull();
+    expect(screen.queryByText("Jelajahi tampilan baru")).toBeNull();
+  });
+  it("enters the operational dashboard directly from the demo alias", async () => {
+    useAppStore.setState({
+      activeUser: null,
+      activeFarm: null,
+      demoMode: false,
+      selectedPondId: null,
+    });
+    render(
+      <MemoryRouter initialEntries={["/demo"]}>
+        <AppProviders>
+          <AppRouter />
+        </AppProviders>
+      </MemoryRouter>,
+    );
+    expect(
+      await screen.findByRole(
+        "heading",
+        { name: "Ringkasan Operasional" },
+        { timeout: 25000 },
+      ),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("navigation", { name: "Navigasi utama" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("button", {
+        name: "Pilih Oksigen terlarut untuk grafik",
+      }),
+    ).toBeTruthy();
+  }, 30000);
   it("keeps the dashboard rendered after asynchronous hydration", async () => {
     render(
       <MemoryRouter initialEntries={["/app/dashboard"]}>
@@ -132,7 +196,9 @@ describe("startup regression", () => {
   });
 
   it("shows a recoverable screen when a render domain throws", () => {
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
     function BrokenDomain(): never {
       throw new Error("render regression fixture");
     }
@@ -142,7 +208,9 @@ describe("startup regression", () => {
       </AppErrorBoundary>,
     );
     expect(screen.getByText("TambaQu mengalami kendala.")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Coba Muat Ulang" })).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Coba Muat Ulang" }),
+    ).toBeTruthy();
     consoleError.mockRestore();
   });
 });
@@ -161,7 +229,8 @@ describe("IndexedDB schema migration", () => {
       recommendations: "id,riskAssessmentId",
       actionLogs: "id,pondId,performedAt,syncStatus",
       devices: "id,pondId,connectionStatus,healthStatus",
-      outbox: "id,&clientMutationId,entityType,entityId,operation,status,createdAt",
+      outbox:
+        "id,&clientMutationId,entityType,entityId,operation,status,createdAt",
       syncMeta: "key",
     });
     await legacy.open();

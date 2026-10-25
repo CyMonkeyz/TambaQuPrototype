@@ -1,6 +1,8 @@
-import { Menu } from "lucide-react";
+import { Menu, LogOut } from "lucide-react";
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { useAppStore } from "../../store/app-store";
+import { logoutLocal } from "../../services/localAuth";
 import {
   mobileMoreNavigation,
   mobilePrimaryNavigation,
@@ -9,6 +11,11 @@ import { cn } from "../../utils/cn";
 import { Dialog } from "../ui/Overlay";
 
 export function MobileNavigation() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const moreActive = mobileMoreNavigation.some(
+    (item) => location.pathname === item.href,
+  );
   const [moreOpen, setMoreOpen] = useState(false);
   return (
     <>
@@ -33,8 +40,13 @@ export function MobileNavigation() {
         ))}
         <button
           onClick={() => setMoreOpen(true)}
-          className="flex min-h-16 flex-col items-center justify-center gap-1 text-[11px] font-semibold text-foreground-muted"
+          className={cn(
+            "flex min-h-16 flex-col items-center justify-center gap-1 text-[11px] font-semibold",
+            moreActive ? "text-primary" : "text-foreground-muted",
+          )}
           aria-label="Buka menu lainnya"
+          aria-expanded={moreOpen}
+          aria-current={moreActive ? "page" : undefined}
         >
           <Menu size={20} />
           Lainnya
@@ -44,9 +56,9 @@ export function MobileNavigation() {
         open={moreOpen}
         onOpenChange={setMoreOpen}
         title="Menu lainnya"
-        description="Akses laporan, perangkat, dan pengaturan TambaQu."
+        description="Budidaya, layanan, perangkat, dan pengaturan."
       >
-        <div className="grid gap-2">
+        <div className="grid gap-2 sm:grid-cols-2">
           {mobileMoreNavigation.map((item) => (
             <NavLink
               key={item.href}
@@ -65,6 +77,18 @@ export function MobileNavigation() {
               {item.label}
             </NavLink>
           ))}
+          <button
+            className="flex min-h-12 items-center gap-3 rounded-xl border border-border px-3 text-sm font-semibold"
+            onClick={async () => {
+              await logoutLocal();
+              setMoreOpen(false);
+              useAppStore.getState().leaveSession();
+              navigate("/login", { replace: true });
+            }}
+          >
+            <LogOut size={19} />
+            Keluar
+          </button>
         </div>
       </Dialog>
     </>

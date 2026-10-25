@@ -41,8 +41,8 @@ const sensorMeta: Record<
     description: "Kadar garam terlarut dalam air.",
   },
   ammonia: {
-    label: "Amonia",
-    shortLabel: "NH3",
+    label: "Amonia total (TAN)",
+    shortLabel: "TAN",
     unit: "mg/L",
     decimals: 2,
     description: "Indikasi kadar amonia dalam air.",

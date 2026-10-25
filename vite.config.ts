@@ -12,16 +12,24 @@ function sitesWorkerEntry(): Plugin {
       this.emitFile({
         type: "asset",
         fileName: "server/index.js",
-        source: `export default {
+        source: `function protect(response) {
+  const headers = new Headers(response.headers)
+  headers.set('X-Content-Type-Options', 'nosniff')
+  headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+  headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
+  headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; frame-ancestors 'none'")
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers })
+}
+export default {
   async fetch(request, env) {
     const response = await env.ASSETS.fetch(request)
     const acceptsHtml = request.headers.get('accept')?.includes('text/html')
     if (response.status === 404 && request.method === 'GET' && acceptsHtml) {
       const url = new URL(request.url)
       url.pathname = '/index.html'
-      return env.ASSETS.fetch(new Request(url, request))
+      return protect(await env.ASSETS.fetch(new Request(url, request)))
     }
-    return response
+    return protect(response)
   },
 }\n`,
       });
@@ -43,9 +51,8 @@ export default defineConfig({
       devOptions: { enabled: false },
       includeAssets: [
         "pwa-64x64.png",
-        "brand/tambaqu-mark.png",
-        "brand/tambaqu-wordmark.png",
-        "brand/tambaqu-lockup.png",
+        "brand/tambaqu-current-mark.png",
+        "brand/tambaqu-current-lockup.png",
         "apple-touch-icon-180x180.png",
       ],
       manifest: {
@@ -54,12 +61,12 @@ export default defineConfig({
         short_name: "TambaQu",
         description:
           "Pemantauan kualitas air dan pencatatan tindak lanjut budidaya udang vaname.",
-        start_url: "/app/dashboard",
+        start_url: "/",
         scope: "/",
         display: "standalone",
         orientation: "any",
-        theme_color: "#087f74",
-        background_color: "#f4f8f8",
+        theme_color: "#0B6E8E",
+        background_color: "#FFFFFF",
         lang: "id",
         categories: ["business", "productivity", "utilities"],
         icons: [
@@ -88,6 +95,7 @@ export default defineConfig({
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/server\//],
         globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
+        globIgnores: ["brand/tambaqu-mark.png", "brand/tambaqu-wordmark.png", "brand/tambaqu-lockup.png", "tambaqu-logo.svg", "favicon.svg"],
         runtimeCaching: [
           {
             urlPattern: ({ request }) => request.destination === "image",

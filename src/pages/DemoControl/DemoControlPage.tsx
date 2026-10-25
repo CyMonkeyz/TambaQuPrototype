@@ -1,4 +1,4 @@
-import { ChevronRight, CloudOff, MonitorUp, Pause, Play, RotateCcw, StepForward, Wifi, WifiLow } from "lucide-react";
+import { ChevronRight, CloudOff, Pause, Play, RotateCcw, StepForward, Wifi, WifiLow } from "lucide-react";
 import { PageHeader } from "../../components/common/PageHeader";
 import { useState } from "react";
 import { Button } from "../../components/ui/Button";
@@ -33,7 +33,8 @@ export function DemoControlPage() {
   const progress = ((store.currentStep + 1) / scenario.steps.length) * 100;
   return (
     <div className="space-y-6">
-      <PageHeader eyebrow="Simulator produk" title="Kontrol Demo" description="Pilih skenario lalu lihat perubahan yang sama mengalir ke beranda, peringatan, PondBrain, dan laporan." actions={<Button variant={store.presentationMode ? "primary" : "secondary"} leadingIcon={<MonitorUp size={17} />} onClick={store.togglePresentationMode}>{store.presentationMode ? "Keluar Mode Presentasi" : "Mode Presentasi"}</Button>} />
+      <PageHeader eyebrow="Simulator produk" title="Kontrol Demo" description="Pilih skenario lalu lihat perubahan yang sama mengalir ke beranda, peringatan, PondBrain, dan laporan." />
+      <p className="demo-disclaimer" role="note">Semua pembacaan dan skor di halaman ini adalah data sintetis. Skenario tidak membaca sensor, mengendalikan perangkat nyata, atau menjalankan AI produksi.</p>
       <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-3" aria-label="Pilih skenario demo">
         {demoScenarios.map((item) => <button key={item.id} onClick={() => store.selectScenario(item.id)} className={`rounded-2xl border bg-surface p-5 text-left transition ${store.scenarioId === item.id ? "border-primary ring-2 ring-[#c5ebe6]" : "border-border hover:border-[#9fcac5]"}`}><div className="flex items-center justify-between"><h2 className="font-semibold">{item.name}</h2><span className="text-xs font-semibold text-primary">{item.steps.length} langkah</span></div><p className="mt-2 text-sm leading-6 text-foreground-muted">{item.description}</p></button>)}
       </section>
@@ -46,7 +47,7 @@ export function DemoControlPage() {
             <Button variant="secondary" leadingIcon={<StepForward size={17} />} disabled={store.status === "completed"} onClick={store.next}>Langkah Berikutnya</Button>
             <Button variant="ghost" leadingIcon={<RotateCcw size={17} />} onClick={() => setResetOpen(true)}>Atur Ulang</Button>
           </div>
-          <div className="mt-5 flex items-center gap-2"><span className="text-xs font-semibold text-foreground-muted">Kecepatan</span>{([1, 2, 4] as const).map((speed) => <Button key={speed} className="min-h-9 px-3 py-1 text-xs" variant={store.speed === speed ? "primary" : "secondary"} onClick={() => store.setSpeed(speed)}>{speed}×</Button>)}</div>
+          <div className="mt-5 flex flex-wrap items-center gap-2"><span className="text-xs font-semibold text-foreground-muted">Kecepatan</span>{([1, 2, 4] as const).map((speed) => <Button key={speed} className="min-h-11 min-w-11 px-3 py-1 text-xs" aria-pressed={store.speed === speed} variant={store.speed === speed ? "primary" : "secondary"} onClick={() => store.setSpeed(speed)}>{speed}×</Button>)}</div>
         </Card>
         <Card className="p-5 sm:p-6">
           <h2 className="font-semibold">Urutan Skenario</h2>

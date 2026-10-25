@@ -50,5 +50,6 @@ export function usePondBrain(pondId: string) {
   return useRepositoryData(
     () => loadPondBrainData(pondId),
     `${pondId}:${revision}`,
+    pondId,
   );
 }

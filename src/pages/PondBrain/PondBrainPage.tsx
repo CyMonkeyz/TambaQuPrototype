@@ -35,7 +35,10 @@ import { getCompletedRecommendationIds } from "../../services/selectors";
 import { useAppStore } from "../../store/app-store";
 import { formatRelativeDemoTime, formatWibTime } from "../../utils/formatters";
 import { OfflineDataNotice } from "../../components/offline/ConnectivityStatus";
-import { getEffectiveConnectivity, useConnectivityStore } from "../../store/connectivity-store";
+import {
+  getEffectiveConnectivity,
+  useConnectivityStore,
+} from "../../store/connectivity-store";
 
 const RiskTrendChart = lazy(() =>
   import("../../components/domain/RiskTrendChart").then((module) => ({
@@ -163,7 +166,7 @@ export function PondBrainPage() {
       <PageHeader
         eyebrow="Panduan keputusan"
         title="Analisis PondBrain"
-        description={`${data.pond.name} · Hari ke-${data.pond.cultureDay}. Pahami risiko, alasan, dan tindakan yang dapat diverifikasi di lapangan.`}
+        description={`${data.pond.name} · Hari ke-${data.pond.cultureDay}. Kondisi, alasan, dan langkah berikutnya.`}
         actions={
           <Link
             to={`/app/ponds/${data.pond.id}`}
@@ -176,9 +179,16 @@ export function PondBrainPage() {
       <OfflineDataNotice timestamp={data.reading.timestamp} />
       {data.device.connectionStatus !== "online" && (
         <Card className="border-[var(--risk-warning)] bg-[var(--risk-warning-bg)] p-4 shadow-none">
-          <p className="text-sm font-semibold text-risk-warning">Data Terbatas</p>
+          <p className="text-sm font-semibold text-risk-warning">
+            Data Terbatas
+          </p>
           <p className="mt-1 text-xs leading-5 text-foreground-muted">
-            Koneksi perangkat {data.device.connectionStatus === "offline" ? "terputus" : "melemah"}. Analisis menggunakan data terakhir dan perlu diverifikasi di lapangan.
+            Koneksi perangkat{" "}
+            {data.device.connectionStatus === "offline"
+              ? "terputus"
+              : "melemah"}
+            . Analisis menggunakan data terakhir dan perlu diverifikasi di
+            lapangan.
           </p>
         </Card>
       )}
@@ -230,7 +240,13 @@ export function PondBrainPage() {
             title="Tindakan Direkomendasikan"
             description="Urutan dibuat dari faktor risiko terbesar dan tingkat urgensi saat ini."
           />
-          {appOffline && <p className="mb-3 rounded-xl bg-[#fff7e4] p-3 text-xs leading-5 text-[#725116]">Rekomendasi berdasarkan analisis terakhir yang tersimpan. PondBrain tidak membuat klaim analisis baru selama data terbaru belum tersedia.</p>}
+          {appOffline && (
+            <p className="mb-3 rounded-xl bg-[#fff7e4] p-3 text-xs leading-5 text-[#725116]">
+              Rekomendasi berdasarkan analisis terakhir yang tersimpan.
+              PondBrain tidak membuat klaim analisis baru selama data terbaru
+              belum tersedia.
+            </p>
+          )}
           <div className="grid gap-3 lg:grid-cols-3">
             {data.recommendations.map((recommendation) => (
               <RecommendationCard
@@ -310,6 +326,22 @@ export function PondBrainPage() {
         </Card>
       </div>
 
+      <details className="rounded-2xl border border-border bg-white p-5">
+        <summary className="cursor-pointer py-2 text-sm font-semibold">
+          Bantuan tambahan · Contoh catatan foto
+        </summary>
+        <div className="mt-4 rounded-xl bg-surface-muted p-4 text-sm leading-7">
+          <p className="font-semibold">Contoh transkripsi · Data simulasi</p>
+          <p>
+            Kolam B · 05.00 WIB. DO 4,2 mg/L, suhu 30,1 °C. Periksa aerasi dan
+            ukur kembali.
+          </p>
+          <p className="text-foreground-muted">
+            Tanggal pada contoh foto terpotong dan perlu diperiksa. Foto dan
+            asisten AI nyata tersedia di ruang akun pilot.
+          </p>
+        </div>
+      </details>
       <ActionConfirmationDialog
         recommendation={selectedRecommendation}
         timestamp={actionTimestamp}

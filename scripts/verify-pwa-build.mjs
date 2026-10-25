@@ -9,6 +9,8 @@ const requiredFiles = [
   "pwa-192x192.png",
   "pwa-512x512.png",
   "maskable-icon-512x512.png",
+  "brand/tambaqu-current-mark.png",
+  "brand/tambaqu-current-lockup.png",
 ];
 
 await Promise.all(requiredFiles.map((file) => access(join(dist, file))));
@@ -18,8 +20,9 @@ const manifest = JSON.parse(
 );
 if (
   manifest.name !== "TambaQu" ||
-  manifest.start_url !== "/app/dashboard" ||
-  manifest.display !== "standalone"
+  manifest.start_url !== "/" ||
+  manifest.display !== "standalone" ||
+  manifest.theme_color !== "#0B6E8E"
 ) {
   throw new Error("Manifest PWA tidak memenuhi kontrak install TambaQu.");
 }

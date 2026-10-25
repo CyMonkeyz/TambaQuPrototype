@@ -44,11 +44,11 @@ export function PondPriorityList({
                 </span>
                 <span className="inline-flex items-center gap-1.5 text-foreground-muted">
                   <FlaskConical size={14} />
-                  NH3{" "}
+                  TAN{" "}
                   <strong className="text-foreground">{ammonia.value}</strong>
                 </span>
                 <span className="text-foreground-muted">
-                  Risk{" "}
+                  Risiko{" "}
                   <strong className="text-foreground">{item.risk.score}</strong>
                 </span>
               </div>

@@ -7,11 +7,14 @@ interface RepositoryData<T> {
   retry: () => void;
 }
 
-type RepositoryState<T> = Omit<RepositoryData<T>, "retry">;
+type RepositoryState<T> = Omit<RepositoryData<T>, "retry"> & {
+  scopeKey?: string;
+};
 
 export function useRepositoryData<T>(
   loader: () => Promise<T>,
   dependencyKey: string,
+  scopeKey?: string,
 ): RepositoryData<T> {
   const [state, setState] = useState<RepositoryState<T>>({
     data: null,
@@ -23,16 +26,21 @@ export function useRepositoryData<T>(
   /* oxlint-disable react-hooks/exhaustive-deps -- caller controls the stable repository key */
   useEffect(() => {
     let active = true;
-    setState((current) => ({ ...current, isLoading: true, error: null }));
+    setState((current) =>
+      scopeKey !== undefined && current.scopeKey === scopeKey
+        ? { ...current, isLoading: current.data === null, error: null }
+        : { data: null, isLoading: true, error: null, scopeKey },
+    );
     loader()
       .then((data) => {
-        if (active) setState({ data, isLoading: false, error: null });
+        if (active) setState({ data, isLoading: false, error: null, scopeKey });
       })
       .catch((error: unknown) => {
         if (active)
           setState({
             data: null,
             isLoading: false,
+            scopeKey,
             error:
               error instanceof Error
                 ? error
@@ -42,8 +50,12 @@ export function useRepositoryData<T>(
     return () => {
       active = false;
     };
-  }, [dependencyKey, attempt]);
+  }, [dependencyKey, attempt, scopeKey]);
   /* oxlint-enable react-hooks/exhaustive-deps */
 
-  return { ...state, retry: () => setAttempt((value) => value + 1) };
+  const visible =
+    scopeKey !== undefined && state.scopeKey !== scopeKey
+      ? { data: null, isLoading: true, error: null }
+      : state;
+  return { ...visible, retry: () => setAttempt((value) => value + 1) };
 }

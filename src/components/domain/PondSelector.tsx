@@ -28,7 +28,7 @@ export function PondSelector({
         >
           {ponds.map((item) => (
             <option key={item.pond.id} value={item.pond.id}>
-              {item.pond.name} · Risk {item.risk.score}
+              {item.pond.name} · Skor {item.risk.score}
             </option>
           ))}
         </select>

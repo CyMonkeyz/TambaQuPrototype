@@ -11,29 +11,25 @@ export function AppLogo({
     <div
       className={cn(
         "flex w-fit items-center gap-2.5",
-        inverted && "rounded-2xl border border-white/20 bg-white px-3 py-2 shadow-sm",
+        inverted &&
+          "rounded-2xl border border-white/20 bg-white px-3 py-2 shadow-sm",
       )}
       aria-label="TambaQu"
     >
       <img
-        src="/brand/tambaqu-mark.png"
+        src={
+          compact
+            ? "/brand/tambaqu-current-mark.png"
+            : "/brand/tambaqu-current-lockup.png"
+        }
         alt=""
-        width={512}
-        height={512}
+        width={compact ? 390 : 1070}
+        height={compact ? 440 : 294}
         className={cn(
-          "size-9 shrink-0 object-contain",
-          compact && "size-10",
+          "shrink-0 object-contain",
+          compact ? "size-10" : "h-11 w-[164px] max-w-full",
         )}
       />
-      {!compact && (
-        <img
-          src="/brand/tambaqu-wordmark.png"
-          alt=""
-          width={720}
-          height={155}
-          className="h-[25px] w-auto object-contain"
-        />
-      )}
     </div>
   );
 }

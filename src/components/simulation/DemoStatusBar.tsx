@@ -1,33 +1,96 @@
-import { ChevronRight, CirclePause, CirclePlay } from "lucide-react";
+import { Pause, Play, RotateCcw, Settings2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getScenario } from "../../services/simulation/scenarioDefinitions";
+import { useState } from "react";
+import {
+  demoScenarios,
+  getScenario,
+} from "../../services/simulation/scenarioDefinitions";
 import { useSimulationStore } from "../../store/simulation-store";
-
-const statusLabels: Record<string, string> = {
-  idle: "siap",
-  running: "berjalan",
-  paused: "dijeda",
-  completed: "selesai",
-};
-
+import { Dialog } from "../ui/Overlay";
+import { Button } from "../ui/Button";
 export function DemoStatusBar() {
-  const scenarioId = useSimulationStore((state) => state.scenarioId);
-  const status = useSimulationStore((state) => state.status);
-  const currentStep = useSimulationStore((state) => state.currentStep);
-  const speed = useSimulationStore((state) => state.speed);
-  const scenario = getScenario(scenarioId);
-  const StepIcon = status === "running" ? CirclePlay : CirclePause;
+  const store = useSimulationStore();
+  const scenario = getScenario(store.scenarioId);
+  const [reset, setReset] = useState(false);
   return (
-    <div className="no-print border-b border-[#bfe1dc] bg-[#e8f6f3] px-5 py-2 text-xs text-[#255b57] lg:px-8">
-      <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-2">
-          <StepIcon size={14} className="shrink-0" aria-hidden="true" />
-          <span className="font-semibold">Demo {statusLabels[status] ?? status}</span>
-          <span className="hidden text-[#3e6561] sm:inline">· {scenario.name} · Langkah {currentStep + 1}/{scenario.steps.length} · {speed}×</span>
-          <span className="truncate text-[#3e6561] sm:hidden">· {scenario.steps[currentStep]?.eventLabel}</span>
+    <>
+      <section
+        className="no-print border-b border-border bg-[#edf8f6] px-4 py-3 sm:px-6 lg:px-8"
+        aria-label="Kontrol demo ringkas"
+      >
+        <div className="mx-auto flex max-w-[1536px] flex-wrap items-center justify-between gap-x-5 gap-y-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-3">
+            <span className="rounded-md border border-primary/15 bg-white px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
+              Data demo
+            </span>
+            <label className="min-w-0">
+              <span className="sr-only">Skenario demo</span>
+              <select
+                className="min-h-11 max-w-[180px] rounded-lg border border-border bg-white px-3 text-xs font-semibold text-foreground sm:max-w-[240px]"
+                value={store.scenarioId}
+                onChange={(e) => store.selectScenario(e.target.value)}
+              >
+                {demoScenarios.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <span className="hidden text-[11px] text-foreground-muted xl:inline">
+              {scenario.steps[store.currentStep]?.eventLabel}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <button
+              className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-primary px-3 text-xs font-semibold text-white disabled:opacity-50"
+              disabled={store.status === "completed"}
+              onClick={store.status === "running" ? store.pause : store.start}
+            >
+              {store.status === "running" ? (
+                <Pause size={14} />
+              ) : (
+                <Play size={14} />
+              )}{" "}
+              {store.status === "running" ? "Jeda" : "Jalankan"}
+            </button>
+            <button
+              className="grid size-11 place-items-center rounded-lg border border-border bg-white text-foreground-muted"
+              aria-label="Ulangi skenario demo"
+              onClick={() => setReset(true)}
+            >
+              <RotateCcw size={15} />
+            </button>
+            <Link
+              to="/app/demo-control"
+              className="grid size-11 place-items-center rounded-lg text-foreground-muted hover:bg-white"
+              aria-label="Pengaturan demo"
+            >
+              <Settings2 size={17} />
+            </Link>
+          </div>
         </div>
-        <Link to="/app/demo-control" className="inline-flex shrink-0 items-center gap-1 font-semibold text-primary">Kontrol <ChevronRight size={13} /></Link>
-      </div>
-    </div>
+      </section>
+      <Dialog
+        open={reset}
+        onOpenChange={setReset}
+        title="Ulangi data demo?"
+        description="Catatan tindakan dan perubahan dalam demo akan dihapus. Data akun pilot tetap terpisah."
+      >
+        <div className="flex justify-end gap-3">
+          <Button variant="secondary" onClick={() => setReset(false)}>
+            Batal
+          </Button>
+          <Button
+            onClick={() => {
+              store.reset();
+              setReset(false);
+            }}
+          >
+            Ulangi demo
+          </Button>
+        </div>
+      </Dialog>
+    </>
   );
 }

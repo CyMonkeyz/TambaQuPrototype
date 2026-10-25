@@ -54,6 +54,7 @@ export function useFarmMonitoring(farmId: string) {
   return useRepositoryData(
     () => loadFarmMonitoring(farmId),
     `${farmId}:${revision}`,
+    farmId,
   );
 }
 
@@ -62,5 +63,6 @@ export function usePondMonitoring(pondId: string) {
   return useRepositoryData(
     () => loadPondMonitoring(pondId),
     `${pondId}:${revision}`,
+    pondId,
   );
 }
